@@ -1,0 +1,2308 @@
+<!DOCTYPE html>
+<html lang="en" data-accent="navy">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<title>Kisan Enterprises Central Business Portal</title>
+<style>
+:root{
+  --navy-950:#0a1424;--navy-900:#0f1d33;--navy-800:#162a47;--navy-700:#1f3a5f;
+  --accent:#1f56c4;--accent-d:#17439c;--accent-l:#eaf0fb;
+  --gold:#b88a2e;
+  --ink:#1b2638;--muted:#5d6b80;--line:#dde3ec;--line-2:#eaeef4;--bg:#f5f7fa;--card:#fff;
+  --ok:#157a3d;--ok-bg:#e8f5ed;--warn:#8a5300;--warn-bg:#fff4de;--err:#b3261e;--err-bg:#fceceb;
+  --r:8px;--r-lg:10px;
+  --shadow:0 1px 2px rgba(15,29,51,.05);
+  --shadow-h:0 4px 14px rgba(15,29,51,.10);
+  font-family:"IBM Plex Sans","Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;
+}
+html[data-accent="blue"]{--accent:#0b66c3;--accent-d:#084f97;--accent-l:#e6f1fb;--navy-900:#0c2340;--navy-800:#123257;--navy-700:#1a4676}
+html[data-accent="teal"]{--accent:#0d7f83;--accent-d:#0a6266;--accent-l:#e3f3f3;--navy-900:#0c2830;--navy-800:#123843;--navy-700:#1a4c5a}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-size:14.5px;line-height:1.55;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{margin:0;line-height:1.25;letter-spacing:-.01em}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:-999px;top:8px;background:#fff;color:var(--navy-900);padding:8px 14px;border-radius:6px;z-index:100;border:2px solid var(--accent)}
+.skip:focus{left:8px}
+svg.ic{flex:none;vertical-align:middle}
+
+/* ---------- buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid transparent;border-radius:6px;padding:8px 16px;font-weight:600;font-size:14px;cursor:pointer;text-decoration:none;background:#fff;color:var(--ink);transition:background .12s,border-color .12s;min-height:38px;white-space:nowrap}
+.btn:active{transform:translateY(1px)}
+.btn.primary{background:var(--accent);color:#fff}
+.btn.primary:hover{background:var(--accent-d)}
+.btn.ghost{background:#fff;border-color:#cdd5e1;color:var(--navy-800)}
+.btn.ghost:hover{background:#f3f6fb;border-color:#aebbd0}
+.btn.light{background:transparent;border-color:rgba(255,255,255,.35);color:#fff}
+.btn.light:hover{background:rgba(255,255,255,.12)}
+.btn.danger{background:#fff;border-color:#e8b9b5;color:var(--err)}
+.btn.danger:hover{background:var(--err-bg)}
+.btn.danger-solid{background:var(--err);color:#fff}
+.btn.sm{padding:5px 10px;min-height:32px;font-size:13px}
+.btn.icon{padding:5px;min-width:32px;min-height:32px}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+
+/* ---------- public portal ---------- */
+.site-header{background:#fff;border-bottom:1px solid var(--line);color:var(--ink);border-top:3px solid var(--navy-900)}
+.header-in{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:12px;padding-bottom:12px}
+.site-header .btn.light{border-color:#cdd5e1;color:var(--navy-800)}
+.site-header .btn.light:hover{background:#f3f6fb}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.mono{width:40px;height:40px;border-radius:6px;background:var(--navy-900);color:#fff;display:grid;place-items:center;font-weight:700;font-size:15px;letter-spacing:.5px;flex:none;box-shadow:inset 0 -3px 0 var(--gold)}
+.brand-name{font-weight:600;font-size:16px;line-height:1.2;color:var(--navy-900)}
+.brand-sub{font-size:12.5px;color:var(--muted)}
+.hero{background:var(--navy-900);color:#fff;padding:36px 0 56px;border-bottom:3px solid var(--gold)}
+.hero h1{font-size:clamp(22px,3.4vw,30px);font-weight:600;max-width:760px}
+.hero p{margin:8px 0 0;max-width:640px;color:#b9c6da}
+.search-row{margin-top:22px;display:flex;gap:10px;flex-wrap:wrap}
+.search{flex:1 1 320px;position:relative;max-width:640px}
+.search input{width:100%;padding:12px 14px 12px 44px;border-radius:6px;border:1px solid transparent;background:#fff;color:var(--ink);font-size:15px}
+.search .ic{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted)}
+.toolbar{margin-top:-26px;position:relative}
+.chips{display:flex;gap:6px;flex-wrap:wrap;background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:10px;box-shadow:var(--shadow)}
+.chip{display:inline-flex;align-items:center;gap:7px;border:1px solid transparent;background:transparent;border-radius:6px;padding:6px 12px;cursor:pointer;font-weight:500;font-size:14px;color:var(--navy-800)}
+.chip:hover{background:var(--accent-l)}
+.chip[aria-pressed="true"]{background:var(--navy-900);color:#fff}
+.chip .n{font-size:12px;opacity:.7}
+.status-line{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:20px 0 12px;color:var(--muted);font-size:13px;flex-wrap:wrap}
+main{min-height:46vh;outline:none}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));padding-bottom:44px}
+.grid.list{grid-template-columns:1fr}
+.grid.compact{grid-template-columns:repeat(auto-fill,minmax(236px,1fr));gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:var(--r-lg);box-shadow:var(--shadow);padding:18px 18px 16px;display:flex;flex-direction:column;gap:12px;transition:box-shadow .15s,border-color .15s}
+.card:hover{box-shadow:var(--shadow-h)}
+.card-top{display:flex;gap:14px;align-items:center}
+.tile{width:44px;height:44px;border-radius:8px;background:var(--accent-l);color:var(--accent-d);display:grid;place-items:center;flex:none}
+.card h3{font-size:16px;font-weight:600;color:var(--navy-900);overflow-wrap:anywhere}
+.catlabel{display:inline-block;margin-top:2px;font-size:12.5px;font-weight:500;color:var(--muted)}
+.badge{align-self:flex-start;background:var(--accent-l);color:var(--accent-d);border:1px solid #cddcf5;border-radius:4px;padding:1px 8px;font-size:12px;font-weight:600}
+.desc{margin:0;color:var(--muted);flex:1;overflow-wrap:anywhere}
+.card-actions{display:flex;gap:8px;flex-wrap:wrap;padding-top:12px;border-top:1px solid var(--line-2)}
+.grid.list .card{flex-direction:row;align-items:center;flex-wrap:wrap}
+.grid.list .card-actions{border-top:0;padding-top:0}
+.grid.list .card-top{flex:0 1 300px}
+.grid.list .desc{flex:1 1 260px}
+.grid.compact .desc{display:none}
+.grid.compact .card{padding:14px}
+.panel{background:#fff;border:1px dashed #b9c5d8;border-radius:var(--r-lg);padding:40px 20px;text-align:center;color:var(--muted)}
+.panel h3{color:var(--navy-900);margin-bottom:6px}
+.panel .ic{color:#8a9ab3;margin-bottom:10px}
+.spin{width:30px;height:30px;border-radius:50%;border:3px solid #d8e0ee;border-top-color:var(--accent);animation:sp .8s linear infinite;margin:0 auto 12px}
+.spin.sm{width:16px;height:16px;border-width:2px;display:inline-block;margin:0 8px 0 0;vertical-align:middle}
+@keyframes sp{to{transform:rotate(360deg)}}
+footer.site{background:var(--navy-950);color:#9fb0c8;padding:20px 0;font-size:13px}
+footer.site .wrap{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+footer.site a,footer.site button.lnk{color:#d3deef;background:none;border:0;cursor:pointer;text-decoration:underline;padding:0}
+
+/* ---------- sign-in ---------- */
+.auth-wrap{min-height:100vh;display:grid;place-items:center;padding:20px;background:var(--navy-900)}
+.auth-card{background:#fff;border-radius:var(--r-lg);border-top:3px solid var(--gold);box-shadow:0 18px 50px rgba(0,0,0,.35);padding:32px;width:100%;max-width:430px}
+.auth-card h1{font-size:21px;font-weight:600;color:var(--navy-900);margin:18px 0 4px}
+.auth-card p.sub{margin:0 0 20px;color:var(--muted);font-size:14px}
+.field{margin-bottom:14px}
+.field label{display:block;font-weight:600;font-size:13.5px;margin-bottom:5px;color:var(--navy-800)}
+.field .hint{font-size:12.5px;color:var(--muted);margin-top:4px}
+.field .err{font-size:12.5px;color:var(--err);margin-top:4px}
+input[type=text],input[type=email],input[type=password],input[type=url],input[type=number],input[type=search],select,textarea{width:100%;border:1px solid #c6cfdc;border-radius:6px;padding:9px 12px;background:#fff;min-height:40px}
+input:hover,select:hover,textarea:hover{border-color:#a9b6ca}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);outline:2px solid rgba(31,86,196,.2);outline-offset:0}
+textarea{resize:vertical;min-height:84px}
+input.bad,select.bad,textarea.bad{border-color:var(--err);background:#fffafa}
+.check{display:flex;align-items:flex-start;gap:10px;font-weight:600;font-size:14px;margin-bottom:10px}
+.check input{width:17px;height:17px;margin-top:2px;flex:none}
+.check small{display:block;font-weight:400;color:var(--muted)}
+.alert{border-radius:6px;padding:10px 12px;font-size:14px;margin-bottom:14px;border-left:3px solid}
+.alert.err{background:var(--err-bg);color:var(--err);border-color:var(--err)}
+.alert.ok{background:var(--ok-bg);color:var(--ok);border-color:var(--ok)}
+.alert.warn{background:var(--warn-bg);color:var(--warn);border-color:#d99a2b}
+.alert.info{background:var(--accent-l);color:var(--navy-800);border-color:var(--accent)}
+.linkbtn{background:none;border:0;color:var(--accent-d);cursor:pointer;text-decoration:underline;padding:0;font-weight:600}
+
+/* ---------- admin ---------- */
+.admin{display:grid;grid-template-columns:244px 1fr;min-height:100vh}
+.side{background:var(--navy-900);color:#fff;padding:18px 12px;display:flex;flex-direction:column;gap:4px;position:sticky;top:0;height:100vh;border-right:1px solid var(--navy-950)}
+.side .brand{padding:4px 8px 18px;margin-bottom:8px;border-bottom:1px solid rgba(255,255,255,.1)}
+.side .brand-name{color:#fff}
+.side .brand-sub{color:#9fb0c8}
+.side .mono{background:#fff;color:var(--navy-900)}
+.nav-btn{display:flex;align-items:center;gap:10px;background:none;border:0;color:#bccade;padding:9px 12px;border-radius:6px;cursor:pointer;text-align:left;font-weight:500;width:100%}
+.nav-btn:hover{background:rgba(255,255,255,.07);color:#fff}
+.nav-btn[aria-current="page"]{background:rgba(255,255,255,.12);color:#fff;box-shadow:inset 3px 0 0 var(--gold)}
+.side .spacer{flex:1}
+.side .tail{border-top:1px solid rgba(255,255,255,.1);padding-top:8px}
+.content{padding:28px 32px;min-width:0;max-width:1240px}
+.page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--line)}
+.page-head h2{font-size:22px;font-weight:600;color:var(--navy-900)}
+.page-head p{margin:4px 0 0;color:var(--muted);font-size:14px;max-width:720px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:20px}
+.stat{background:#fff;border:1px solid var(--line);border-top:3px solid var(--navy-800);border-radius:var(--r);padding:14px 16px;box-shadow:var(--shadow)}
+.stat .k{font-size:13px;font-weight:500;color:var(--muted)}
+.stat .v{font-size:30px;font-weight:600;color:var(--navy-900);line-height:1.2;margin-top:2px;font-variant-numeric:tabular-nums}
+.box{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow);padding:18px 20px;margin-bottom:18px}
+.box h3{font-size:15px;font-weight:600;color:var(--navy-900);margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line-2)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.row{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--line-2)}
+.row:first-child{border-top:0}
+.row .grow{flex:1;min-width:0}
+.row .t{font-weight:600;color:var(--navy-900);overflow-wrap:anywhere}
+.row .s{font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+.row .acts{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.pill{display:inline-block;border-radius:4px;font-size:12px;font-weight:600;padding:1px 8px}
+.pill.on{background:var(--ok-bg);color:var(--ok)}
+.pill.off{background:#eef1f5;color:#5d6b80}
+.pill.qr{background:var(--accent-l);color:var(--accent-d)}
+.bar{height:8px;background:#e6ebf3;border-radius:99px;overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--accent)}
+.bar>i.hot{background:#d97706}
+.shortcuts{display:flex;gap:10px;flex-wrap:wrap}
+table.log{width:100%;border-collapse:collapse;font-size:13.5px}
+table.log th{text-align:left;font-size:12.5px;font-weight:600;color:var(--muted);padding:8px;background:#f5f7fa;border-bottom:1px solid var(--line)}
+table.log td{padding:9px 8px;border-bottom:1px solid var(--line-2);vertical-align:top;overflow-wrap:anywhere}
+table.log tbody tr:hover{background:#fafbfd}
+.tag{display:inline-block;background:var(--accent-l);color:var(--accent-d);font-weight:600;font-size:12px;padding:1px 8px;border-radius:4px;white-space:nowrap}
+.tag.red{background:var(--err-bg);color:var(--err)}
+.tag.grn{background:var(--ok-bg);color:var(--ok)}
+.iconpick{display:grid;grid-template-columns:repeat(auto-fill,minmax(42px,1fr));gap:6px}
+.iconpick button{height:42px;border:1px solid var(--line);background:#fff;border-radius:6px;cursor:pointer;color:var(--navy-800);display:grid;place-items:center}
+.iconpick button:hover{background:var(--accent-l)}
+.iconpick button[aria-checked="true"]{background:var(--accent);color:#fff;border-color:var(--accent)}
+.cols2{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+
+/* ---------- modal, toast ---------- */
+.backdrop{position:fixed;inset:0;background:rgba(10,20,36,.6);display:grid;place-items:center;padding:16px;z-index:50;overflow:auto}
+.modal{background:#fff;border-radius:var(--r-lg);box-shadow:0 20px 60px rgba(0,0,0,.4);width:100%;max-width:520px;max-height:calc(100vh - 32px);display:flex;flex-direction:column}
+.modal.wide{max-width:720px}
+.modal-h{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 20px;border-bottom:1px solid var(--line);background:#f8fafc;border-radius:var(--r-lg) var(--r-lg) 0 0}
+.modal-h h2{font-size:17px;font-weight:600;color:var(--navy-900)}
+.modal-b{padding:18px 20px;overflow:auto}
+.modal-f{padding:12px 20px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;background:#f8fafc;border-radius:0 0 var(--r-lg) var(--r-lg)}
+.qrbox{text-align:center}
+.qrbox canvas{max-width:100%;height:auto;border:1px solid var(--line);border-radius:6px}
+.qrbox .qn{font-size:19px;font-weight:600;color:var(--navy-900);margin:6px 0 8px}
+.qrbox .qi{color:var(--muted);margin:8px auto 0;max-width:380px}
+.qrbox .qu{font-size:12px;color:#7a8aa5;word-break:break-all;margin-top:8px}
+#toasts{position:fixed;right:16px;bottom:16px;display:flex;flex-direction:column;gap:8px;z-index:80;max-width:min(380px,calc(100vw - 32px))}
+.toast{background:var(--navy-900);color:#fff;padding:10px 14px;border-radius:6px;box-shadow:var(--shadow-h);font-size:14px;border-left:4px solid var(--accent);animation:ti .18s ease-out}
+.toast.ok{border-left-color:#22c55e}.toast.err{border-left-color:#ef4444}
+@keyframes ti{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.menu-btn{display:none}
+
+/* ---------- responsive ---------- */
+@media (max-width:860px){
+  .admin{grid-template-columns:1fr}
+  .side{position:static;height:auto;flex-direction:row;flex-wrap:wrap;align-items:center;padding:10px}
+  .side .brand{padding:0 8px 8px 4px;margin-bottom:4px;width:100%}
+  .side .navs{display:flex;gap:4px;overflow-x:auto;width:100%;padding-bottom:4px}
+  .nav-btn{width:auto;white-space:nowrap;padding:8px 12px}
+  .side .spacer{display:none}
+  .side .tail{display:flex;gap:6px;width:100%;flex-wrap:wrap;border-top:0;padding-top:0}
+  .content{padding:18px 16px}
+  .two,.cols2{grid-template-columns:1fr}
+  .row{flex-wrap:wrap}
+  .row .acts{justify-content:flex-start;width:100%}
+}
+@media (max-width:520px){
+  .wrap{padding:0 14px}
+  .brand-sub{display:none}
+  .grid{grid-template-columns:1fr}
+  .btn{padding:8px 12px}
+}
+@media print{
+  body.printing-qr #app,body.printing-qr #toasts{display:none!important}
+  body.printing-qr{background:#fff}
+  body.printing-qr .backdrop{position:static;background:none;padding:0;display:block;overflow:visible}
+  body.printing-qr .modal{box-shadow:none;max-width:none;max-height:none;border-radius:0}
+  body.printing-qr .modal-h,body.printing-qr .modal-f{display:none}
+  body.printing-qr .qrbox canvas{border:0;width:70mm!important;height:70mm!important}
+  body.printing-qr .qrbox .qn{font-size:26px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+body{background:#eef2f8}
+.pp-wrap{max-width:1320px;margin:0 auto;padding:0 28px}
+
+
+.pp-top{background:#0b2447;color:#fff;position:sticky;top:0;z-index:20;border-bottom:1px solid rgba(255,255,255,.08)}
+.pp-top-in{display:flex;align-items:center;gap:24px;min-height:76px}
+.pp-top .mono{background:#fff;color:#0b2447;width:44px;height:44px;box-shadow:none;border-radius:8px;font-size:16px}
+.pp-top .brand-name{color:#fff;font-size:19px;font-weight:700}
+.pp-top .brand-sub{color:#b8c8e4;font-size:13px}
+.pp-nav{display:flex;gap:6px;margin-left:20px}
+.pp-nav button{display:flex;align-items:center;gap:8px;background:none;border:0;color:#dbe6f7;font-weight:600;font-size:15px;padding:10px 16px;border-radius:8px;cursor:pointer}
+.pp-nav button:hover{background:rgba(255,255,255,.08)}
+.pp-nav button[aria-current="page"]{background:rgba(255,255,255,.12);color:#fff;box-shadow:inset 0 -3px 0 #3b82f6}
+.pp-top-r{margin-left:auto;display:flex;align-items:center;gap:14px}
+.pp-icbtn{background:none;border:0;color:#fff;cursor:pointer;padding:8px;border-radius:8px}
+.pp-icbtn:hover{background:rgba(255,255,255,.1)}
+.pp-admin{display:inline-flex;align-items:center;gap:8px;background:#1f6feb;color:#fff;border:0;border-radius:8px;padding:11px 20px;font-weight:600;font-size:15px;cursor:pointer}
+.pp-admin:hover{background:#1a5fd0}
+
+/* hero */
+.hero.pp-hero{padding:44px 0 46px;border-bottom:0;color:#fff;
+  background:linear-gradient(100deg,rgba(8,24,52,.97) 0%,rgba(13,46,98,.82) 55%,rgba(20,66,134,.55) 100%),
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 700 420'%3E%3Cg fill='rgba(150,190,255,.16)'%3E%3Crect x='60' y='120' width='120' height='300'/%3E%3Crect x='200' y='40' width='150' height='380'/%3E%3Crect x='370' y='90' width='110' height='330'/%3E%3Crect x='500' y='10' width='170' height='410'/%3E%3C/g%3E%3Cg stroke='rgba(190,215,255,.22)' stroke-width='2'%3E%3Cpath d='M230 40v380M270 40v380M310 40v380M540 10v410M585 10v410M630 10v410'/%3E%3C/g%3E%3C/svg%3E") right bottom/auto 100% no-repeat,#0d2a55}
+.pp-hero-in{display:grid;grid-template-columns:1.25fr 1fr;gap:40px;align-items:center}
+.pp-welcome{font-size:20px;color:#cfdcf2;margin-bottom:6px}
+.hero.pp-hero h1{font-size:clamp(30px,4.6vw,52px);font-weight:700;letter-spacing:-.02em;max-width:none;line-height:1.1}
+.hero.pp-hero p{font-size:19px;color:#dbe6f7;max-width:560px;margin:12px 0 0}
+.pp-feats{display:flex;gap:26px;flex-wrap:wrap;margin-top:28px}
+.pp-feat{display:flex;align-items:center;gap:12px}
+.pp-feat .ci{width:46px;height:46px;border-radius:50%;border:2px solid rgba(160,195,255,.7);display:grid;place-items:center;color:#fff;flex:none}
+.pp-feat b{display:block;font-size:15px}
+.pp-feat span{font-size:13px;color:#b8c8e4}
+.pp-glass{border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.08);backdrop-filter:blur(6px);border-radius:12px;padding:26px 28px}
+.pp-glass h3{font-size:22px;font-weight:600;margin-bottom:10px;color:#fff}
+.pp-glass div{font-size:17px;color:#dbe6f7;line-height:1.5}
+
+
+.pp-body{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:22px;padding-top:22px;padding-bottom:44px;align-items:start}
+.pp-filterbar{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-bottom:18px}
+.pp-search{position:relative;flex:0 1 380px;min-width:240px}
+.pp-search input{width:100%;padding:13px 14px 13px 46px;border:1px solid #dfe6f1;border-radius:10px;background:#fff;font-size:15px;box-shadow:0 2px 8px rgba(15,29,51,.06)}
+.pp-search .ic{position:absolute;left:15px;top:50%;transform:translateY(-50%);color:#6b7a93}
+.pp-chips{display:flex;gap:8px;flex-wrap:wrap}
+.pp-chips .chip{background:#e4ecf8;border:0;border-radius:999px;padding:8px 18px;font-size:14px;font-weight:500;color:#1b3a66}
+.pp-chips .chip svg{display:none}
+.pp-chips .chip .n{opacity:.6;font-size:12px}
+.pp-chips .chip:hover{background:#d5e2f6}
+.pp-chips .chip[aria-pressed="true"]{background:#1f6feb;color:#fff}
+.pp-panel{background:#fff;border:1px solid #dfe6f1;border-radius:12px;padding:20px 22px 8px;box-shadow:0 2px 10px rgba(15,29,51,.05)}
+.pp-panel-h{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+.pp-panel-h h2{font-size:25px;font-weight:700;color:#0b2447;display:flex;align-items:center;gap:12px}
+.pp-panel-h h2::before{content:"";width:5px;height:28px;background:#1f6feb;border-radius:3px}
+.pp-tools{display:flex;gap:10px;align-items:center}
+.pp-seg{display:flex;border:1px solid #dfe6f1;border-radius:8px;overflow:hidden}
+.pp-seg button{background:#fff;border:0;padding:8px 11px;cursor:pointer;color:#5d6b80}
+.pp-seg button[aria-pressed="true"]{background:#e4ecf8;color:#1f6feb}
+.pp-tools select{width:auto;min-height:38px;padding:6px 12px}
+.pp-panel .status-line{margin:8px 0 12px}
+.pp-panel .grid{padding-bottom:20px;gap:16px}
+
+.card.pp-card{border:1px solid #dfe6f1;border-left:1px solid #dfe6f1;border-radius:10px;padding:18px;box-shadow:0 1px 4px rgba(15,29,51,.05)}
+.card.pp-card:hover{box-shadow:0 6px 18px rgba(15,29,51,.12)}
+.pp-tile{width:62px;height:62px;border-radius:12px;color:#fff;display:grid;place-items:center;flex:none}
+.pp-card h3{font-size:17px;font-weight:700;color:#0b2447}
+.pp-cat{display:inline-block;background:#e6f0fd;color:#1d5fc2;border-radius:99px;padding:1px 12px;font-size:12.5px;font-weight:500;margin:4px 6px 0 0}
+.pp-label{display:inline-block;background:#fff3dc;color:#8a5300;border-radius:99px;padding:1px 12px;font-size:12.5px;font-weight:500;margin-top:4px}
+.pp-card .card-actions{border-top:0;padding-top:4px;margin-top:auto}
+.pp-card .card-actions .btn{flex:1 1 120px}
+.btn.pp-soft{background:#eef4fd;border-color:#dbe7fa;color:#1d5fc2}
+.btn.pp-soft:hover{background:#e0ebfb}
+
+
+.pp-side .pp-box{background:#fff;border:1px solid #dfe6f1;border-radius:12px;padding:18px 20px;box-shadow:0 2px 10px rgba(15,29,51,.05)}
+.pp-side h3{font-size:17px;font-weight:700;color:#0b2447;margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.pp-stat{display:flex;align-items:center;gap:14px;padding:12px 0;border-top:1px solid #edf1f7}
+.pp-stat:first-of-type{border-top:0}
+.pp-stat .ci{width:42px;height:42px;border-radius:50%;background:#e6f0fd;color:#1f6feb;display:grid;place-items:center;flex:none}
+.pp-stat b{display:block;font-size:22px;line-height:1.1;color:#0b2447}
+.pp-stat span{font-size:13.5px;color:#5d6b80}
+
+@media (max-width:1000px){.pp-body{grid-template-columns:1fr}.pp-hero-in{grid-template-columns:1fr}.pp-glass{display:none}}
+@media (max-width:720px){.pp-nav{display:none}.pp-wrap{padding:0 16px}.pp-top-in{gap:12px}.pp-top .brand-sub{display:none}.pp-panel-h h2{font-size:21px}}
+
+
+.pp-top-in{min-height:56px;gap:16px}
+.pp-top .mono{width:36px;height:36px;font-size:14px}
+.pp-top .brand-name{font-size:16px}
+.pp-top .brand-sub{display:none}
+.pp-nav{margin-left:12px}
+.pp-nav button{padding:7px 12px;font-size:14px}
+.pp-admin{padding:8px 16px;font-size:14px}
+
+.hero.pp-hero{padding:18px 0 20px}
+.pp-hero-in{grid-template-columns:1fr;gap:0}
+.pp-welcome,.pp-feats,.pp-glass{display:none}
+.hero.pp-hero h1{font-size:clamp(20px,2.6vw,26px);line-height:1.2}
+.hero.pp-hero p{font-size:14.5px;margin:4px 0 0}
+
+.pp-body{grid-template-columns:minmax(0,1fr) 240px;gap:16px;padding-top:14px;padding-bottom:24px}
+.pp-filterbar{margin-bottom:12px;gap:12px}
+.pp-search input{padding:9px 12px 9px 40px;font-size:14px}
+.pp-chips .chip{padding:6px 14px;font-size:13px}
+
+.pp-panel{padding:14px 16px 4px}
+.pp-panel-h h2{font-size:19px}
+.pp-panel-h h2::before{height:20px;width:4px}
+.pp-panel .grid{grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;padding-bottom:12px}
+.pp-panel .status-line{margin:4px 0 8px}
+
+.card.pp-card{padding:14px;gap:8px}
+.pp-tile{width:44px;height:44px;border-radius:10px}
+.pp-tile svg{width:22px;height:22px}
+.pp-card h3{font-size:15px}
+.pp-cat,.pp-label{font-size:11.5px;padding:0 10px}
+.pp-card .desc{font-size:13px;line-height:1.45}
+.pp-card .card-actions .btn{min-height:34px;padding:6px 12px;font-size:13px}
+
+.pp-side .pp-box{padding:12px 14px}
+.pp-side h3{font-size:15px;margin-bottom:6px}
+.pp-stat{padding:8px 0;gap:10px}
+.pp-stat .ci{width:34px;height:34px}
+.pp-stat b{font-size:18px}
+.pp-stat span{font-size:12.5px}
+
+@media (max-width:1000px){.pp-body{grid-template-columns:1fr}}
+
+html{-webkit-text-size-adjust:100%}
+button,a{-webkit-tap-highlight-color:transparent}
+.pp-panel{scroll-margin-top:64px}
+
+/* fix: List view button now really shows one column on desktop */
+.pp-panel .grid.list{grid-template-columns:1fr}
+
+/* ---------- tablets and phones ---------- */
+@media (max-width:720px){
+  .pp-wrap{padding:0 14px}
+  .pp-top-in{gap:10px;min-height:54px}
+  .pp-top .brand{flex:1 1 auto;min-width:0;gap:10px}
+  .pp-top .mono{width:34px;height:34px;font-size:13px}
+  .pp-top .brand-name{font-size:13.5px;line-height:1.25}
+  .pp-top-r{flex:none;gap:2px}
+  .pp-icbtn{padding:10px}
+  .pp-admin{padding:9px 12px;font-size:13px;gap:6px}
+
+  .hero.pp-hero{padding:14px 0 16px}
+  .hero.pp-hero h1{font-size:19px}
+  .hero.pp-hero p{font-size:13.5px}
+
+  .pp-body{padding-top:12px;padding-bottom:18px}
+  .pp-side{display:none}
+
+  .pp-filterbar{flex-direction:column;align-items:stretch;gap:10px}
+  .pp-search{flex:none;width:100%;min-width:0}
+  .pp-chips{flex-wrap:nowrap;overflow-x:auto;width:100%;padding-bottom:4px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .pp-chips::-webkit-scrollbar{display:none}
+  .pp-chips .chip{flex:none;white-space:nowrap;padding:8px 14px}
+
+  .pp-panel{padding:12px 12px 2px}
+  .pp-panel-h h2{font-size:17px}
+  .pp-seg{display:none}
+  .pp-panel .grid{grid-template-columns:1fr;gap:10px}
+  .grid.list .card{flex-direction:column;align-items:stretch}
+  .grid.list .card-top{flex:none}
+  .pp-card .card-actions .btn{min-height:42px}
+
+  footer.site .wrap{flex-direction:column;gap:6px;text-align:center}
+}
+
+/* very small phones: hide the search icon (the search box is right below) */
+@media (max-width:420px){
+  .pp-icbtn[aria-label="Search applications"]{display:none}
+  .pp-top .brand-name{font-size:12.5px}
+}
+
+/* ---------- admin area on phones ---------- */
+@media (max-width:860px){
+  .page-head h2{font-size:19px}
+  .box{padding:14px}
+  .stat .v{font-size:24px}
+  .row .acts .btn{flex:1 1 auto}
+}
+@media (max-width:520px){
+  .content{padding:14px 12px}
+  .stats{grid-template-columns:repeat(2,1fr);gap:10px}
+  .auth-card{padding:22px 18px}
+  .btn{min-height:42px}
+  .btn.sm{min-height:38px}
+  .btn.icon{min-width:42px;min-height:42px}
+  .iconpick{grid-template-columns:repeat(auto-fill,minmax(40px,1fr))}
+
+  /* dialogs fit the screen and buttons are easy to tap */
+  .backdrop{padding:8px}
+  .modal{max-height:calc(100vh - 16px);max-height:calc(100dvh - 16px)}
+  .modal-b{padding:14px}
+  .modal-f{padding:10px 14px}
+  .modal-f .btn{flex:1 1 auto}
+
+  #toasts{left:12px;right:12px;bottom:12px;max-width:none}
+}
+
+/* 16px inputs stop iPhones zooming in when you tap a field */
+@media (max-width:720px){
+  .pp-search input,.pp-tools select,
+  input[type=text],input[type=email],input[type=password],input[type=url],input[type=number],input[type=search],select,textarea{font-size:16px}
+}
+
+@media (max-width:860px){
+  .admin{grid-template-columns:minmax(0,1fr);overflow-x:hidden}
+  .side,.content{min-width:0;max-width:100%}
+
+  /* top bar: brand, then a swipeable tab row, then Public portal / Log out */
+  .side{padding:10px 12px;gap:6px}
+  .side .navs{min-width:0;max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .side .navs::-webkit-scrollbar{display:none}
+  .nav-btn{flex:none}
+  .nav-btn[aria-current="page"]{box-shadow:inset 0 -3px 0 var(--gold)}
+  .side .tail{margin-top:2px}
+  .side .tail .nav-btn{flex:1 1 0;width:auto;justify-content:center;background:rgba(255,255,255,.06)}
+
+  /* page content: everything may shrink, nothing forces extra width */
+  .two,.cols2{grid-template-columns:minmax(0,1fr)}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .box,.row .grow{min-width:0}
+  .page-head > div:first-child{flex:1 1 220px;min-width:0}
+}
+
+#topbar{position:fixed;top:0;left:0;right:0;height:3px;z-index:200;overflow:hidden;opacity:0;pointer-events:none;transition:opacity .15s}
+#topbar.on{opacity:1}
+#topbar i{display:block;height:100%;width:35%;background:#3b82f6;animation:tb 1s ease-in-out infinite}
+@keyframes tb{0%{transform:translateX(-100%)}100%{transform:translateX(300%)}}
+body.working{cursor:progress}
+
+.btn.busy,.nav-btn.busy,.pp-icbtn.busy{pointer-events:none;opacity:.7}
+.btn.busy::after,.nav-btn.busy::after{content:"";flex:none;width:14px;height:14px;border:2px solid currentColor;border-top-color:transparent;border-radius:50%;animation:sp .7s linear infinite}
+.btn.icon.busy svg{display:none}
+.pp-icbtn.busy svg{animation:sp .8s linear infinite}
+
+/* ---------- mobile fit fix ---------- */
+html{overflow-x:hidden}
+body{max-width:100%;overflow-x:clip}
+.pp-body > div,.pp-panel,.pp-filterbar,.pp-chips,.pp-search{min-width:0;max-width:100%}
+.pp-panel .grid{grid-template-columns:repeat(auto-fill,minmax(min(260px,100%),1fr))}
+.card.pp-card,.card-top,.card-top > div{min-width:0;max-width:100%}
+.pp-card h3,.pp-card .desc{overflow-wrap:anywhere}
+
+@media (max-width:1000px){
+  .pp-body{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:720px){
+  .pp-panel .grid,.pp-panel .grid.list{grid-template-columns:minmax(0,1fr)}
+  .pp-top-in,.pp-top .brand{min-width:0}
+  .pp-panel-h{flex-wrap:wrap}
+  .pp-tools{flex:1 1 100%;justify-content:flex-end}
+  .pp-tools select{max-width:100%}
+  .pp-card .card-actions .btn{flex:1 1 100%}
+}
+</style>
+<?!= include_('Logo') ?>
+</head>
+<body>
+<div id="app"></div>
+<div id="overlay"></div>
+<div id="toasts" role="status" aria-live="polite"></div>
+
+<script>
+'use strict';
+(function(){const o=Element.prototype.replaceChildren;Element.prototype.replaceChildren=function(...n){return o.apply(this,n.filter(x=>x!=null&&x!==false));};})();
+const BOOT_VIEW = <?!= JSON.stringify(bootView) ?>;
+const SESSION_KEY = 'kb.session';
+
+/* ====================================================================
+   QR CODE ENCODER  (self-contained, byte mode, error-correction level M,
+   versions 1-40, masks 0-7). Based on the public QR Code specification
+   (ISO/IEC 18004); no external library or service is used.
+   ==================================================================== */
+const QR = (function () {
+  const ECC = [-1,10,16,26,18,24,16,18,22,22,26,30,22,22,24,24,28,28,26,26,26,26,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28];
+  const BLK = [-1,1,1,1,2,2,4,4,4,5,5,5,8,9,9,10,10,11,13,14,16,17,17,18,20,21,23,25,26,28,29,31,33,35,37,38,40,43,45,47,49];
+  function mul(x, y) { let z = 0; for (let i = 7; i >= 0; i--) { z = (z << 1) ^ ((z >>> 7) * 0x11D); z ^= ((y >>> i) & 1) * x; } return z; }
+  function divisor(deg) {
+    const r = new Array(deg).fill(0); r[deg - 1] = 1; let root = 1;
+    for (let i = 0; i < deg; i++) { for (let j = 0; j < deg; j++) { r[j] = mul(r[j], root); if (j + 1 < deg) r[j] ^= r[j + 1]; } root = mul(root, 2); }
+    return r;
+  }
+  function remainder(data, div) {
+    const r = div.map(() => 0);
+    data.forEach(b => { const f = b ^ r.shift(); r.push(0); div.forEach((c, i) => { r[i] ^= mul(c, f); }); });
+    return r;
+  }
+  function rawModules(v) { let r = (16 * v + 128) * v + 64; if (v >= 2) { const n = Math.floor(v / 7) + 2; r -= (25 * n - 10) * n - 55; if (v >= 7) r -= 36; } return r; }
+  function dataWords(v) { return Math.floor(rawModules(v) / 8) - ECC[v] * BLK[v]; }
+  function alignPos(v, size) {
+    if (v === 1) return [];
+    const n = Math.floor(v / 7) + 2;
+    const step = v === 32 ? 26 : Math.ceil((v * 4 + 4) / (n * 2 - 2)) * 2;
+    const res = [6];
+    for (let p = size - 7; res.length < n; p -= step) res.splice(1, 0, p);
+    return res;
+  }
+  function addEcc(data, v) {
+    const nb = BLK[v], el = ECC[v], raw = Math.floor(rawModules(v) / 8), ns = nb - raw % nb, sl = Math.floor(raw / nb);
+    const div = divisor(el), blocks = [];
+    for (let i = 0, k = 0; i < nb; i++) {
+      const dat = data.slice(k, k + sl - el + (i < ns ? 0 : 1)); k += dat.length;
+      const ecc = remainder(dat, div); if (i < ns) dat.push(0);
+      blocks.push(dat.concat(ecc));
+    }
+    const out = [];
+    for (let i = 0; i < blocks[0].length; i++) blocks.forEach((b, j) => { if (i !== sl - el || j >= ns) out.push(b[i]); });
+    return out;
+  }
+  function encode(text) {
+    const bytes = Array.from(unescape(encodeURIComponent(text)), c => c.charCodeAt(0));
+    let ver = 1;
+    for (; ; ver++) {
+      if (ver > 40) throw new Error('The URL is too long for a QR code.');
+      if (4 + (ver <= 9 ? 8 : 16) + bytes.length * 8 <= dataWords(ver) * 8) break;
+    }
+    const bits = []; const put = (val, len) => { for (let i = len - 1; i >= 0; i--) bits.push((val >>> i) & 1); };
+    put(4, 4); put(bytes.length, ver <= 9 ? 8 : 16); bytes.forEach(b => put(b, 8));
+    const cap = dataWords(ver) * 8;
+    put(0, Math.min(4, cap - bits.length)); put(0, (8 - bits.length % 8) % 8);
+    for (let pad = 0xEC; bits.length < cap; pad ^= 0xEC ^ 0x11) put(pad, 8);
+    const data = []; for (let i = 0; i < bits.length; i += 8) { let b = 0; for (let j = 0; j < 8; j++) b = (b << 1) | bits[i + j]; data.push(b); }
+    const words = addEcc(data, ver);
+    const size = ver * 4 + 17, mod = [], fn = [];
+    for (let y = 0; y < size; y++) { mod.push(new Array(size).fill(false)); fn.push(new Array(size).fill(false)); }
+    const setF = (x, y, d) => { mod[y][x] = d; fn[y][x] = true; };
+    for (let i = 0; i < size; i++) { setF(6, i, i % 2 === 0); setF(i, 6, i % 2 === 0); }
+    const finder = (x, y) => { for (let dy = -4; dy <= 4; dy++) for (let dx = -4; dx <= 4; dx++) { const d = Math.max(Math.abs(dx), Math.abs(dy)), xx = x + dx, yy = y + dy; if (xx >= 0 && xx < size && yy >= 0 && yy < size) setF(xx, yy, d !== 2 && d !== 4); } };
+    finder(3, 3); finder(size - 4, 3); finder(3, size - 4);
+    const ap = alignPos(ver, size), na = ap.length;
+    for (let i = 0; i < na; i++) for (let j = 0; j < na; j++) {
+      if ((i === 0 && j === 0) || (i === 0 && j === na - 1) || (i === na - 1 && j === 0)) continue;
+      for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) setF(ap[i] + dx, ap[j] + dy, Math.max(Math.abs(dx), Math.abs(dy)) !== 1);
+    }
+    const drawFormat = mask => {
+      const d = (0 << 3) | mask; let r = d;                       // ECC level M = 0b00
+      for (let i = 0; i < 10; i++) r = (r << 1) ^ ((r >>> 9) * 0x537);
+      const f = ((d << 10) | r) ^ 0x5412, bit = i => ((f >>> i) & 1) !== 0;
+      for (let i = 0; i <= 5; i++) setF(8, i, bit(i));
+      setF(8, 7, bit(6)); setF(8, 8, bit(7)); setF(7, 8, bit(8));
+      for (let i = 9; i < 15; i++) setF(14 - i, 8, bit(i));
+      for (let i = 0; i < 8; i++) setF(size - 1 - i, 8, bit(i));
+      for (let i = 8; i < 15; i++) setF(8, size - 15 + i, bit(i));
+      setF(8, size - 8, true);
+    };
+    drawFormat(0);
+    if (ver >= 7) {
+      let r = ver; for (let i = 0; i < 12; i++) r = (r << 1) ^ ((r >>> 11) * 0x1F25);
+      const bitsV = (ver << 12) | r;
+      for (let i = 0; i < 18; i++) { const c = ((bitsV >>> i) & 1) !== 0, a = size - 11 + i % 3, b = Math.floor(i / 3); setF(a, b, c); setF(b, a, c); }
+    }
+    let k = 0;
+    for (let right = size - 1; right >= 1; right -= 2) {
+      if (right === 6) right = 5;
+      for (let vert = 0; vert < size; vert++) for (let j = 0; j < 2; j++) {
+        const x = right - j, up = ((right + 1) & 2) === 0, y = up ? size - 1 - vert : vert;
+        if (!fn[y][x] && k < words.length * 8) { mod[y][x] = ((words[k >>> 3] >>> (7 - (k & 7))) & 1) !== 0; k++; }
+      }
+    }
+    const maskFn = [(x, y) => (x + y) % 2 === 0, (x, y) => y % 2 === 0, (x, y) => x % 3 === 0, (x, y) => (x + y) % 3 === 0,
+      (x, y) => (Math.floor(x / 3) + Math.floor(y / 2)) % 2 === 0, (x, y) => x * y % 2 + x * y % 3 === 0,
+      (x, y) => (x * y % 2 + x * y % 3) % 2 === 0, (x, y) => ((x + y) % 2 + x * y % 3) % 2 === 0];
+    const applyMask = m => { for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) if (!fn[y][x] && maskFn[m](x, y)) mod[y][x] = !mod[y][x]; };
+    const penalty = () => {
+      let p = 0;
+      for (let pass = 0; pass < 2; pass++) for (let a = 0; a < size; a++) {
+        let run = 1;
+        for (let b = 1; b < size; b++) {
+          const cur = pass ? mod[b][a] : mod[a][b], prev = pass ? mod[b - 1][a] : mod[a][b - 1];
+          if (cur === prev) { run++; if (run === 5) p += 3; else if (run > 5) p++; } else run = 1;
+        }
+      }
+      let dark = 0;
+      for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) { if (mod[y][x]) dark++; if (x < size - 1 && y < size - 1 && mod[y][x] === mod[y][x + 1] && mod[y][x] === mod[y + 1][x] && mod[y][x] === mod[y + 1][x + 1]) p += 3; }
+      p += Math.floor(Math.abs(dark * 20 - size * size * 10) / (size * size)) * 10;
+      return p;
+    };
+    let best = 0, bestP = Infinity;
+    for (let m = 0; m < 8; m++) { applyMask(m); drawFormat(m); const p = penalty(); if (p < bestP) { bestP = p; best = m; } applyMask(m); }
+    applyMask(best); drawFormat(best);
+    return { size: size, mod: mod };
+  }
+  function toCanvas(canvas, qr, targetPx) {
+    const quiet = 4, n = qr.size + quiet * 2, scale = Math.max(2, Math.floor(targetPx / n)), px = n * scale;
+    canvas.width = px; canvas.height = px;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, px, px); ctx.fillStyle = '#000000';
+    for (let y = 0; y < qr.size; y++) for (let x = 0; x < qr.size; x++) if (qr.mod[y][x]) ctx.fillRect((x + quiet) * scale, (y + quiet) * scale, scale, scale);
+  }
+  function toSvg(qr) {
+    const q = 4, n = qr.size + q * 2; let d = '';
+    for (let y = 0; y < qr.size; y++) for (let x = 0; x < qr.size; x++) if (qr.mod[y][x]) d += 'M' + (x + q) + ' ' + (y + q) + 'h1v1h-1z';
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + n + ' ' + n + '" shape-rendering="crispEdges"><rect width="' + n + '" height="' + n + '" fill="#fff"/><path d="' + d + '" fill="#000"/></svg>';
+  }
+  return { encode: encode, toCanvas: toCanvas, toSvg: toSvg };
+})();
+
+/* ====================================================================
+   ICONS + DOM HELPERS  (all rendering uses createElement/textContent)
+   ==================================================================== */
+const NS = 'http://www.w3.org/2000/svg';
+const ICONS = {
+  grid:'M3 3h7v7H3z|M14 3h7v7h-7z|M14 14h7v7h-7z|M3 14h7v7H3z',
+  briefcase:'M3 7h18v13H3z|M9 7V4h6v3|M3 13h18',
+  users:'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2|M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z|M22 21v-2a4 4 0 0 0-3-3.9|M16 3.1a4 4 0 0 1 0 7.8',
+  calendar:'M3 5h18v16H3z|M16 3v4|M8 3v4|M3 10h18',
+  wallet:'M3 7h18v13H3z|M3 7l3-3h12l3 3|M16 14h2',
+  rupee:'M6 4h12|M6 9h12|M6 4c6 0 6 9 0 9h-1l8 7',
+  chart:'M4 20V10|M10 20V4|M16 20v-7|M22 20H2',
+  file:'M14 3H6v18h12V7z|M14 3v4h4|M9 13h6|M9 17h6',
+  folder:'M3 6h6l2 2h10v12H3z',
+  settings:'M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z|M12 2v3|M12 19v3|M2 12h3|M19 12h3|M5 5l2 2|M17 17l2 2|M5 19l2-2|M17 7l2-2',
+  truck:'M1 6h13v10H1z|M14 9h4l4 4v3h-8z|M5 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4z|M17 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4z',
+  cart:'M3 4h2l2.5 11h11L21 8H6|M9 20a1 1 0 1 0 0-2 1 1 0 0 0 0 2z|M18 20a1 1 0 1 0 0-2 1 1 0 0 0 0 2z',
+  home:'M3 11l9-8 9 8|M5 10v10h14V10|M10 20v-6h4v6',
+  clipboard:'M9 3h6v3H9z|M7 5H5v16h14V5h-2|M9 12h6|M9 16h6',
+  mail:'M3 5h18v14H3z|M3 6l9 7 9-7',
+  shield:'M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z|M9 12l2 2 4-4',
+  clock:'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z|M12 7v5l3 2',
+  building:'M4 21V3h10v18|M14 9h6v12|M8 7h2|M8 11h2|M8 15h2|M17 13h1|M17 17h1',
+  tag:'M3 12V3h9l9 9-9 9z|M7.5 7.5h.01',
+  phone:'M6 3h4l2 5-2.5 1.5a11 11 0 0 0 5 5L16 12l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2z',
+  star:'M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z',
+  globe:'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z|M3 12h18|M12 3c3 3 3 15 0 18|M12 3c-3 3-3 15 0 18',
+  qr:'M3 3h7v7H3z|M14 3h7v7h-7z|M3 14h7v7H3z|M14 14h3v3h-3z|M20 14v3|M14 20h3|M20 20v1',
+  lock:'M5 11h14v10H5z|M8 11V7a4 4 0 0 1 8 0v4',
+  search:'M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z|M21 21l-4.3-4.3',
+  refresh:'M21 12a9 9 0 1 1-3-6.7|M21 3v6h-6',
+  up:'M12 19V5|M5 12l7-7 7 7', down:'M12 5v14|M19 12l-7 7-7-7',
+  edit:'M12 20h9|M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z',
+  trash:'M3 6h18|M8 6V4h8v2|M6 6l1 15h10l1-15',
+  external:'M14 3h7v7|M21 3l-9 9|M18 14v7H3V6h7',
+  logout:'M9 21H4V3h5|M16 17l5-5-5-5|M21 12H9',
+  plus:'M12 5v14|M5 12h14', close:'M6 6l12 12|M18 6L6 18', print:'M6 9V3h12v6|M6 18H3v-8h18v8h-3|M6 14h12v7H6z',
+  download:'M12 3v12|M7 10l5 5 5-5|M4 21h16', power:'M12 3v9|M6.3 6.3a8 8 0 1 0 11.4 0',
+  check:'M5 13l4 4L19 7', link:'M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1|M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1'
+};
+const ICON_CHOICES = ['grid','briefcase','users','calendar','wallet','rupee','chart','file','folder','settings','truck','cart','home','clipboard','mail','shield','clock','building','tag','phone','star','globe','qr','lock','link'];
+
+function icon(name, size) {
+  const svg = document.createElementNS(NS, 'svg');
+  svg.setAttribute('viewBox', '0 0 24 24'); svg.setAttribute('width', size || 20); svg.setAttribute('height', size || 20);
+  svg.setAttribute('fill', 'none'); svg.setAttribute('stroke', 'currentColor'); svg.setAttribute('stroke-width', '2');
+  svg.setAttribute('stroke-linecap', 'round'); svg.setAttribute('stroke-linejoin', 'round'); svg.setAttribute('aria-hidden', 'true'); svg.setAttribute('class', 'ic');
+  const key = Object.prototype.hasOwnProperty.call(ICONS, name) ? name : 'grid';
+  ICONS[key].split('|').forEach(d => { const p = document.createElementNS(NS, 'path'); p.setAttribute('d', d); svg.appendChild(p); });
+  return svg;
+}
+function h(tag, attrs, ...kids) {
+  const el = document.createElement(tag);
+  if (attrs) for (const k of Object.keys(attrs)) {
+    const v = attrs[k];
+    if (v === null || v === undefined || v === false) continue;
+    if (k === 'class') el.className = v;
+    else if (k === 'text') el.textContent = v;
+    else if (k.slice(0, 2) === 'on' && typeof v === 'function') el.addEventListener(k.slice(2), v);
+    else el.setAttribute(k, v === true ? '' : String(v));
+  }
+  kids.flat(Infinity).forEach(c => { if (c === null || c === undefined || c === false) return; el.append(c.nodeType ? c : document.createTextNode(String(c))); });
+  return el;
+}
+const $ = (s, r) => (r || document).querySelector(s);
+function isHttpUrl(u) { return typeof u === 'string' && /^https?:\/\/[^\s<>"'`\\]+$/i.test(u); }
+function fmtTime(ms) { try { return new Date(ms).toLocaleString(); } catch (e) { return ''; } }
+function fmtKB(b) { return (b / 1024).toFixed(b < 10240 ? 1 : 0) + ' KB'; }
+
+/* ====================================================================
+   STATE, RPC, TOASTS, MODALS
+   ==================================================================== */
+const state = { pub: null, pubErr: null, loading: false, query: '', cat: 'all', token: null, email: '', page: 'dashboard', timer: null, apps: [], cats: [], meta: {} };
+const ui = {};
+const DEFAULT_SETTINGS = { portalName: 'Kisan Enterprises Central Business Portal', tagline: 'One secure place for every Kisan business application', description: '', monogram: 'KE', accent: 'navy', cardLayout: 'grid', defaultCategory: 'all', refreshMinutes: 0, footerText: 'Kisan Enterprises. All rights reserved.', qr: { size: 300, caption: true } };
+function S() { return state.pub ? state.pub.settings : DEFAULT_SETTINGS; }
+
+function rpc(fn, ...args) {
+  return new Promise((resolve, reject) => {
+    if (!(window.google && google.script && google.script.run)) { reject(Object.assign(new Error('This page must be opened from the deployed web app URL.'), { code: 'NOENV' })); return; }
+    google.script.run
+      .withSuccessHandler(r => { if (r && r.ok) resolve(r.data); else reject(Object.assign(new Error((r && r.error) || 'The request failed.'), { code: r && r.code })); })
+      .withFailureHandler(() => reject(Object.assign(new Error('Could not reach the server. Check your connection and try again.'), { code: 'NETWORK' })))[fn](...args);
+  });
+}
+async function adminCall(action, payload) {
+  try { return await rpc('apiAdmin', state.token, action, payload || {}); }
+  catch (e) { if (e.code === 'SESSION') { endSession(); showLogin(e.message); } throw e; }
+}
+function saveToken(t) { try { sessionStorage.setItem(SESSION_KEY, t); } catch (e) { /* storage may be blocked; token stays in memory */ } }
+function loadToken() { try { return sessionStorage.getItem(SESSION_KEY); } catch (e) { return null; } }
+function endSession() { state.token = null; state.email = ''; try { sessionStorage.removeItem(SESSION_KEY); } catch (e) { /* ignore */ } }
+
+function toast(msg, type) {
+  const t = h('div', { class: 'toast ' + (type || ''), text: msg });
+  $('#toasts').append(t);
+  setTimeout(() => t.remove(), type === 'err' ? 7000 : 3800);
+}
+
+function openModal(opts) {
+  const prev = document.activeElement;
+  const titleId = 'mt' + Math.random().toString(36).slice(2, 8);
+  const back = h('div', { class: 'backdrop' });
+  const closeBtn = h('button', { class: 'btn ghost icon', 'aria-label': 'Close dialog', type: 'button' }, icon('close', 18));
+  const modal = h('div', { class: 'modal' + (opts.wide ? ' wide' : ''), role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': titleId },
+    h('div', { class: 'modal-h' }, h('h2', { id: titleId, text: opts.title }), closeBtn),
+    h('div', { class: 'modal-b' }, opts.body),
+    opts.footer ? h('div', { class: 'modal-f' }, opts.footer) : null);
+  back.append(modal);
+  const api = { el: modal, close() { document.removeEventListener('keydown', onKey, true); back.remove(); document.body.classList.remove('printing-qr'); if (prev && prev.focus) { try { prev.focus(); } catch (e) { /* ignore */ } } if (opts.onClose) opts.onClose(); } };
+  function onKey(ev) {
+    if (ev.key === 'Escape') { ev.stopPropagation(); api.close(); return; }
+    if (ev.key === 'Tab') {
+      const f = [...modal.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]),select,textarea,[tabindex]:not([tabindex="-1"])')].filter(x => x.offsetParent !== null);
+      if (!f.length) return;
+      const first = f[0], last = f[f.length - 1];
+      if (ev.shiftKey && document.activeElement === first) { ev.preventDefault(); last.focus(); }
+      else if (!ev.shiftKey && document.activeElement === last) { ev.preventDefault(); first.focus(); }
+    }
+  }
+  closeBtn.addEventListener('click', api.close);
+  back.addEventListener('mousedown', ev => { if (ev.target === back && !opts.sticky) api.close(); });
+  document.addEventListener('keydown', onKey, true);
+  $('#overlay').append(back);
+  const focusEl = opts.focus ? modal.querySelector(opts.focus) : modal.querySelector('input,select,textarea,button.primary,button');
+  setTimeout(() => { if (focusEl) focusEl.focus(); }, 30);
+  return api;
+}
+
+function confirmDialog(o) {
+  return new Promise(resolve => {
+    let done = false;
+    const finish = v => { if (!done) { done = true; resolve(v); } };
+    const yes = h('button', { class: 'btn ' + (o.danger ? 'danger-solid' : 'primary'), type: 'button', text: o.confirmText || 'Confirm' });
+    const no = h('button', { class: 'btn ghost', type: 'button', text: 'Cancel' });
+    const m = openModal({ title: o.title, body: h('p', { style: 'margin:0', text: o.message }), footer: [no, yes], focus: 'button.ghost.btn:not(.icon)', onClose: () => finish(false) });
+    no.addEventListener('click', () => { finish(false); m.close(); });
+    yes.addEventListener('click', () => { finish(true); m.close(); });
+  });
+}
+
+function mount(node) { const app = $('#app'); app.replaceChildren(node); window.scrollTo(0, 0); }
+function stopTimers() { if (state.timer) { clearInterval(state.timer); state.timer = null; } }
+function applyBranding() { document.documentElement.dataset.accent = S().accent || 'navy'; document.title = S().portalName; }
+function spinnerBlock(text) { return h('div', { class: 'panel', role: 'status' }, h('div', { class: 'spin' }), h('div', { text: text || 'Loading…' })); }
+
+/* ====================================================================
+   PUBLIC PORTAL
+   ==================================================================== */
+function brand(light) {
+  return h('div', { class: 'brand' }, h('div', { class: 'mono', 'aria-hidden': 'true', text: S().monogram || 'KE' }),
+    h('div', { style: 'min-width:0' }, h('div', { class: 'brand-name', text: S().portalName }), light ? null : h('div', { class: 'brand-sub', text: S().tagline || '' })));
+}
+
+function renderPublic() {
+  stopTimers(); state.view = 'public';
+  const s = S();
+  const search = h('input', { type: 'search', id: 'q', placeholder: 'Search applications by name, description or category', 'aria-label': 'Search applications', autocomplete: 'off', value: state.query });
+  search.addEventListener('input', () => { state.query = search.value; updatePublicList(); });
+  const refreshBtn = h('button', { class: 'btn light', type: 'button', onclick: () => loadPublic(true) }, icon('refresh', 16), 'Refresh');
+  ui.status = h('div', { 'aria-live': 'polite' });
+  ui.chips = h('div', { class: 'chips', role: 'group', 'aria-label': 'Filter by category' });
+  ui.grid = h('div', { class: 'grid' });
+  ui.main = h('main', { tabindex: '-1', id: 'main' });
+  ui.main.append(h('div', { class: 'wrap' }, ui.status, ui.grid));
+  const skip = h('button', { class: 'skip', type: 'button', onclick: () => ui.main.focus() }, 'Skip to applications');
+  mount(h('div', null, skip,
+    h('header', { class: 'site-header' }, h('div', { class: 'wrap header-in' }, brand(false),
+      h('nav', { 'aria-label': 'Primary' }, h('button', { class: 'btn light', type: 'button', onclick: () => showLogin() }, icon('lock', 16), 'Admin Sign In')))),
+    h('section', { class: 'hero' }, h('div', { class: 'wrap' }, h('h1', { text: 'Open the business application you need' }), h('p', { text: s.description || '' }),
+      h('div', { class: 'search-row' }, h('div', { class: 'search' }, icon('search', 20), search), refreshBtn))),
+    h('div', { class: 'wrap toolbar' }, ui.chips),
+    ui.main,
+    h('footer', { class: 'site' }, h('div', { class: 'wrap' }, h('span', { text: '© ' + new Date().getFullYear() + ' ' + (s.footerText || '') }),
+      h('span', null, 'Each application keeps its own sign-in and permissions. ', h('button', { class: 'lnk', type: 'button', onclick: () => showLogin() }, 'Administrator'))))));
+  applyBranding();
+  if (state.pub) updatePublicList();
+  loadPublic(false);
+}
+
+async function loadPublic(manual) {
+  if (state.loading) return;
+  state.loading = true;
+  if (!state.pub && ui.grid) { ui.grid.replaceChildren(spinnerBlock('Loading applications…')); ui.grid.className = 'grid'; }
+  if (manual && ui.status) ui.status.textContent = 'Refreshing…';
+  try {
+    const first = !state.pub;
+    state.pub = await rpc('apiGetPublicData');
+    state.pubErr = null;
+    if (first) state.cat = (state.pub.settings.defaultCategory && state.pub.categories.some(c => c.id === state.pub.settings.defaultCategory)) ? state.pub.settings.defaultCategory : 'all';
+    if (state.cat !== 'all' && !state.pub.categories.some(c => c.id === state.cat)) state.cat = 'all';
+    applyBranding();
+    if (state.view === 'public') {
+      setupAutoRefresh();
+      const brandEl = $('.brand-name'); if (brandEl) brandEl.textContent = S().portalName;
+      const sub = $('.brand-sub'); if (sub) sub.textContent = S().tagline || '';
+      const mono = $('.mono'); if (mono) mono.textContent = S().monogram;
+      const hp = $('.hero p'); if (hp) hp.textContent = S().description || '';
+      updatePublicList();
+      if (manual) toast('Application list is up to date.', 'ok');
+    }
+  } catch (e) {
+    state.pubErr = e.message;
+    if (state.view === 'public' && ui.grid) {
+      ui.chips.replaceChildren(); ui.status.textContent = '';
+      ui.grid.className = 'grid';
+      ui.grid.replaceChildren(h('div', { class: 'panel', role: 'alert', style: 'grid-column:1/-1' }, icon('lock', 36), h('h3', { text: 'The portal could not load' }), h('p', { text: e.message }), h('button', { class: 'btn primary', type: 'button', onclick: () => loadPublic(true) }, 'Try again')));
+    }
+  } finally { state.loading = false; }
+}
+
+function setupAutoRefresh() {
+  stopTimers();
+  const m = S().refreshMinutes;
+  if (m > 0) state.timer = setInterval(() => { if (!document.hidden && state.view === 'public') loadPublic(false); }, m * 60000);
+}
+
+function catById(id) { return state.pub && state.pub.allCategories.filter(c => c.id === id)[0]; }
+
+function updatePublicList() {
+  if (!state.pub || !ui.grid) return;
+  const p = state.pub;
+  if (state.cat !== 'all' && !p.categories.some(c => c.id === state.cat)) state.cat = 'all';
+  ui.chips.replaceChildren(
+    chip('All', 'all', p.apps.length, 'grid'),
+    ...p.categories.map(c => chip(c.name, c.id, c.count, c.icon)));
+  ui.chips.style.display = p.categories.length ? '' : 'none';
+  const q = state.query.trim().toLowerCase();
+  const list = p.apps.filter(a => {
+    if (state.cat !== 'all' && a.cat !== state.cat) return false;
+    if (!q) return true;
+    const c = catById(a.cat);
+    return (a.name + ' ' + a.desc + ' ' + (a.label || '') + ' ' + (c ? c.name : '')).toLowerCase().indexOf(q) >= 0;
+  });
+  ui.grid.className = 'grid' + (S().cardLayout === 'list' ? ' list' : S().cardLayout === 'compact' ? ' compact' : '');
+  ui.status.textContent = '';
+  ui.status.append(h('div', { class: 'status-line' }, h('span', { text: list.length + ' of ' + p.apps.length + ' application' + (p.apps.length === 1 ? '' : 's') + ' shown' }), h('span', { text: 'Updated ' + new Date(p.generatedAt).toLocaleTimeString() })));
+  if (!list.length) {
+    const none = !p.apps.length;
+    ui.grid.replaceChildren(h('div', { class: 'panel', style: 'grid-column:1/-1' }, icon(none ? 'folder' : 'search', 38),
+      h('h3', { text: none ? 'No applications are available yet' : 'No applications match your search' }),
+      h('p', { text: none ? 'The administrator has not published any applications. Please check back soon.' : 'Try different words, or clear the search and category filter.' }),
+      none ? null : h('button', { class: 'btn ghost', type: 'button', onclick: () => { state.query = ''; state.cat = 'all'; const i = $('#q'); if (i) i.value = ''; updatePublicList(); } }, 'Clear filters')));
+    return;
+  }
+  ui.grid.replaceChildren(...list.map(appCard));
+}
+
+function chip(label, id, n, ic) {
+  return h('button', { class: 'chip', type: 'button', 'aria-pressed': String(state.cat === id), onclick: () => { state.cat = id; updatePublicList(); } }, icon(ic || 'tag', 15), label, h('span', { class: 'n', text: String(n) }));
+}
+
+function appCard(a) {
+  const c = catById(a.cat);
+  const ok = isHttpUrl(a.url);
+  return h('article', { class: 'card' },
+    h('div', { class: 'card-top' }, h('div', { class: 'tile' }, icon(a.icon, 24)),
+      h('div', { style: 'min-width:0' }, h('h3', { text: a.name }), h('span', { class: 'catlabel', text: c ? c.name : 'Other' }))),
+    a.label ? h('span', { class: 'badge', text: a.label }) : null,
+    h('p', { class: 'desc', text: a.desc }),
+    h('div', { class: 'card-actions' },
+      ok ? h('a', { class: 'btn primary', href: a.url, target: '_blank', rel: 'noopener noreferrer', 'aria-label': 'Open ' + a.name + ' in a new tab' }, 'Open App', icon('external', 16))
+         : h('button', { class: 'btn primary', type: 'button', disabled: true }, 'Link unavailable'),
+      a.qr ? h('button', { class: 'btn ghost', type: 'button', onclick: () => openQr(a, false) }, icon('qr', 16), 'Show QR Code') : null));
+}
+
+/* ---------- QR modal ---------- */
+async function openQr(app, admin) {
+  const body = h('div', { class: 'qrbox' }, spinnerBlock('Preparing QR code…'));
+  const dl = h('button', { class: 'btn ghost', type: 'button', disabled: true }, icon('download', 16), 'Download PNG');
+  const dls = h('button', { class: 'btn ghost', type: 'button', disabled: true }, icon('download', 16), 'SVG');
+  const pr = h('button', { class: 'btn primary', type: 'button', disabled: true }, icon('print', 16), 'Print');
+  const m = openModal({ title: 'QR code', body: body, footer: [dls, dl, pr] });
+  try {
+    const d = admin ? await adminCall('qrData', { id: app.id }) : await rpc('apiGetQrData', app.id);   // always the latest saved URL
+    if (!isHttpUrl(d.url)) throw new Error('The saved URL is not a valid web address, so no QR code was generated.');
+    const qr = QR.encode(d.url);
+    const size = (S().qr && S().qr.size) || 300;
+    const canvas = h('canvas', { role: 'img', 'aria-label': 'QR code that opens ' + d.name });
+    QR.toCanvas(canvas, qr, size);
+    canvas.style.width = Math.min(size, 420) + 'px';
+    body.replaceChildren(h('div', { id: 'qrPrint' }, h('div', { class: 'qn', text: d.name }), canvas,
+      (S().qr && S().qr.caption === false) ? null : h('p', { class: 'qi', text: 'Scan with your phone camera to open ' + d.name + '. The application will ask you to sign in if it requires it.' }),
+      h('div', { class: 'qu', text: d.url })));
+    const fname = d.name.replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '').toLowerCase() || 'qr';
+    dl.disabled = dls.disabled = pr.disabled = false;
+    dl.addEventListener('click', () => canvas.toBlob(b => b ? saveBlob(b, fname + '-qr.png') : toast('Download is not available in this browser.', 'err'), 'image/png'));
+    dls.addEventListener('click', () => saveBlob(new Blob([QR.toSvg(qr)], { type: 'image/svg+xml' }), fname + '-qr.svg'));
+    pr.addEventListener('click', () => { document.body.classList.add('printing-qr'); setTimeout(() => { try { window.print(); } catch (e) { toast('Printing is not available here. Use Download instead.', 'err'); } setTimeout(() => document.body.classList.remove('printing-qr'), 500); }, 60); });
+  } catch (e) {
+    body.replaceChildren(h('div', { class: 'alert err', role: 'alert', text: e.message }));
+  }
+}
+function saveBlob(blob, name) {
+  try {
+    const u = URL.createObjectURL(blob), a = h('a', { href: u, download: name });
+    document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000);
+  } catch (e) { toast('Download is blocked in this browser view. Use Print or open the portal in a normal tab.', 'err'); }
+}
+
+/* ====================================================================
+   ADMIN AUTH VIEWS
+   ==================================================================== */
+async function showLogin(message) {
+  stopTimers(); state.view = 'login';
+  if (state.token) { showAdmin(); return; }
+  const err = h('div', { class: 'alert err', role: 'alert', style: message ? '' : 'display:none', text: message || '' });
+  const email = h('input', { type: 'email', id: 'em', autocomplete: 'username', required: true, placeholder: 'name@company.com' });
+  const pw = h('input', { type: 'password', id: 'pw', autocomplete: 'current-password', required: true });
+  const btn = h('button', { class: 'btn primary', type: 'submit', style: 'width:100%' }, 'Sign in');
+  const setupLink = h('div', { style: 'margin-top:14px;font-size:14px;display:none' }, 'No administrator yet? ', h('button', { class: 'linkbtn', type: 'button', onclick: showSetup }, 'First-time setup'));
+  const form = h('form', { novalidate: true },
+    err,
+    h('div', { class: 'field' }, h('label', { for: 'em', text: 'Administrator email' }), email),
+    h('div', { class: 'field' }, h('label', { for: 'pw', text: 'Password' }), pw),
+    btn, setupLink);
+  form.addEventListener('submit', async ev => {
+    ev.preventDefault(); err.style.display = 'none';
+    if (!email.value.trim() || !pw.value) { err.textContent = 'Enter your email and password.'; err.style.display = ''; return; }
+    btn.disabled = true; btn.replaceChildren(h('span', { class: 'spin sm' }), 'Signing in…');
+    try {
+      const r = await rpc('apiLogin', email.value, pw.value);
+      pw.value = ''; state.token = r.token; state.email = r.email; saveToken(r.token); state.page = 'dashboard'; showAdmin();
+    } catch (e) { err.textContent = e.message; err.style.display = ''; btn.disabled = false; btn.replaceChildren('Sign in'); pw.value = ''; pw.focus(); }
+  });
+  mount(h('div', { class: 'auth-wrap' }, h('div', { class: 'auth-card' }, h('div', { class: 'brand', style: 'color:var(--navy-900)' }, h('div', { class: 'mono', style: 'background:var(--navy-900);color:#fff', text: S().monogram }), h('div', { class: 'brand-name', text: S().portalName })),
+    h('h1', { text: 'Administrator sign in' }), h('p', { class: 'sub', text: 'Authorised administrators only.' }), form,
+    h('div', { style: 'margin-top:16px;font-size:14px' }, h('button', { class: 'linkbtn', type: 'button', onclick: renderPublic }, '← Back to the public portal')))));
+  setTimeout(() => email.focus(), 30);
+  try { const st = await rpc('apiSetupStatus'); if (!st.configured) setupLink.style.display = ''; } catch (e) { /* ignore */ }
+}
+
+function showSetup() {
+  state.view = 'setup';
+  const err = h('div', { class: 'alert err', role: 'alert', style: 'display:none' });
+  const email = h('input', { type: 'email', id: 'se', autocomplete: 'username', placeholder: 'Administrator email' });
+  const code = h('input', { type: 'text', id: 'sc', autocomplete: 'off', placeholder: 'XXXX-XXXX-XXXX', style: 'text-transform:uppercase;letter-spacing:2px' });
+  const p1 = h('input', { type: 'password', id: 'sp', autocomplete: 'new-password' });
+  const p2 = h('input', { type: 'password', id: 'sp2', autocomplete: 'new-password' });
+  const btn = h('button', { class: 'btn primary', type: 'submit', style: 'width:100%' }, 'Create administrator account');
+  const form = h('form', { novalidate: true }, err,
+    h('div', { class: 'alert info' }, 'Run ', h('b', { text: 'initializePortal' }), ' in the Apps Script editor and copy the one-time setup code from its Execution log. Only someone with editor access to the script can see it.'),
+    h('div', { class: 'field' }, h('label', { for: 'se', text: 'Administrator email' }), email),
+    h('div', { class: 'field' }, h('label', { for: 'sc', text: 'One-time setup code' }), code),
+    h('div', { class: 'field' }, h('label', { for: 'sp', text: 'New password' }), p1, h('div', { class: 'hint', text: 'At least 8 characters.' })),
+    h('div', { class: 'field' }, h('label', { for: 'sp2', text: 'Confirm password' }), p2), btn);
+  form.addEventListener('submit', async ev => {
+    ev.preventDefault(); err.style.display = 'none';
+    const fail = m => { err.textContent = m; err.style.display = ''; };
+    if (!email.value.trim() || !code.value.trim()) return fail('Enter the administrator email and the setup code.');
+    if (p1.value.length < 8) return fail('Password needs 8 or more characters.');
+    if (p1.value !== p2.value) return fail('The two passwords do not match.');
+    btn.disabled = true; btn.replaceChildren(h('span', { class: 'spin sm' }), 'Creating…');
+    try { await rpc('apiSetup', email.value, code.value, p1.value); p1.value = p2.value = ''; toast('Administrator account created. Please sign in.', 'ok'); showLogin(); }
+    catch (e) { fail(e.message); btn.disabled = false; btn.replaceChildren('Create administrator account'); }
+  });
+  mount(h('div', { class: 'auth-wrap' }, h('div', { class: 'auth-card' }, h('h1', { text: 'First-time administrator setup' }), h('p', { class: 'sub', text: 'This can only be completed with the setup code issued from the script editor.' }), form,
+    h('div', { style: 'margin-top:16px;font-size:14px' }, h('button', { class: 'linkbtn', type: 'button', onclick: () => showLogin() }, '← Back to sign in')))));
+  setTimeout(() => email.focus(), 30);
+}
+
+/* ====================================================================
+   ADMIN SHELL
+   ==================================================================== */
+const ADMIN_PAGES = [['dashboard', 'Dashboard', 'grid'], ['apps', 'Applications', 'briefcase'], ['categories', 'Categories', 'tag'], ['settings', 'Settings', 'settings'], ['log', 'Activity Log', 'clipboard']];
+
+function showAdmin() {
+  stopTimers(); state.view = 'admin';
+  ui.content = h('div', { class: 'content', id: 'adminMain', tabindex: '-1' });
+  const navs = h('nav', { class: 'navs', 'aria-label': 'Administration' }, ADMIN_PAGES.map(p => h('button', { class: 'nav-btn', type: 'button', 'data-p': p[0], onclick: () => gotoAdmin(p[0]) }, icon(p[2], 18), p[1])));
+  const side = h('aside', { class: 'side' },
+    h('div', { class: 'brand' }, h('div', { class: 'mono', text: S().monogram }), h('div', null, h('div', { class: 'brand-name', text: 'Administration' }), h('div', { class: 'brand-sub', text: state.email }))),
+    navs, h('div', { class: 'spacer' }),
+    h('div', { class: 'tail' },
+      h('button', { class: 'nav-btn', type: 'button', onclick: () => { state.pub = null; renderPublic(); } }, icon('globe', 18), 'Public portal'),
+      h('button', { class: 'nav-btn', type: 'button', onclick: doLogout }, icon('logout', 18), 'Log out')));
+  mount(h('div', { class: 'admin' }, side, ui.content));
+  gotoAdmin(state.page || 'dashboard');
+}
+
+async function doLogout() {
+  try { await rpc('apiAdmin', state.token, 'logout', {}); } catch (e) { /* session may already be gone */ }
+  endSession(); state.pub = null; toast('You have been signed out.', 'ok'); showLogin();
+}
+
+function gotoAdmin(page) {
+  state.page = page;
+  document.querySelectorAll('.nav-btn[data-p]').forEach(b => { if (b.dataset.p === page) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
+  ui.content.replaceChildren(spinnerBlock());
+  const fn = { dashboard: pgDashboard, apps: pgApps, categories: pgCats, settings: pgSettings, log: pgLog }[page];
+  ui.content.focus({ preventScroll: true });
+  return fn().catch(e => { if (e.code !== 'SESSION') ui.content.replaceChildren(h('div', { class: 'alert err', role: 'alert' }, e.message, ' ', h('button', { class: 'linkbtn', type: 'button', onclick: () => gotoAdmin(page) }, 'Retry'))); });
+}
+
+function pageHead(title, sub, ...actions) {
+  return h('div', { class: 'page-head' }, h('div', null, h('h2', { text: title }), sub ? h('p', { text: sub }) : null), h('div', { class: 'shortcuts' }, actions));
+}
+
+/* ---------- Dashboard ---------- */
+async function pgDashboard() {
+  const d = await adminCall('dashboard');
+  const pct = Math.min(100, Math.round(d.storage.usedBytes / d.storage.limitBytes * 100));
+  const stat = (k, v) => h('div', { class: 'stat' }, h('div', { class: 'k', text: k }), h('div', { class: 'v', text: String(v) }));
+  ui.content.replaceChildren(
+    pageHead('Dashboard', 'Overview of the application registry.', h('button', { class: 'btn primary', type: 'button', onclick: () => { gotoAdmin('apps').then(() => { if (state.cats.length) openAppForm(null); }); } }, icon('plus', 16), 'Add application')),
+    d.corrupted ? h('div', { class: 'alert warn', role: 'alert', text: d.corrupted + ' stored record(s) could not be read and were skipped. Open Script Properties in the editor (keys starting with kb.app.) to inspect them.' }) : null,
+    h('div', { class: 'stats' }, stat('Total applications', d.total), stat('Active', d.active), stat('Inactive', d.inactive), stat('Categories', d.categories)),
+    h('div', { class: 'two' },
+      h('div', { class: 'box' }, h('h3', { text: 'Recently modified' }),
+        d.recent.length ? d.recent.map(r => h('div', { class: 'row' }, h('div', { class: 'grow' }, h('div', { class: 't', text: r.name }), h('div', { class: 's', text: r.category + ' · ' + fmtTime(r.updatedAt) })), h('span', { class: 'pill ' + (r.active ? 'on' : 'off'), text: r.active ? 'Active' : 'Inactive' })))
+          : h('p', { style: 'color:var(--muted);margin:0', text: 'No applications yet. Use “Add application” to publish the first one.' })),
+      h('div', { class: 'box' }, h('h3', { text: 'Shortcuts' }),
+        h('div', { class: 'shortcuts' },
+          h('button', { class: 'btn ghost', type: 'button', onclick: () => gotoAdmin('apps') }, icon('briefcase', 16), 'Manage applications'),
+          h('button', { class: 'btn ghost', type: 'button', onclick: () => gotoAdmin('categories') }, icon('tag', 16), 'Categories'),
+          h('button', { class: 'btn ghost', type: 'button', onclick: () => gotoAdmin('settings') }, icon('settings', 16), 'Settings'),
+          h('button', { class: 'btn ghost', type: 'button', onclick: () => gotoAdmin('log') }, icon('clipboard', 16), 'Activity log')),
+        h('h3', { style: 'margin-top:20px', text: 'Storage' }),
+        h('div', { class: 'bar', role: 'progressbar', 'aria-valuenow': String(pct), 'aria-valuemin': '0', 'aria-valuemax': '100', 'aria-label': 'Storage used' }, h('i', { class: pct > 80 ? 'hot' : '', style: 'width:' + pct + '%' })),
+        h('p', { class: 's', style: 'font-size:13px;color:var(--muted);margin:8px 0 0', text: fmtKB(d.storage.usedBytes) + ' of about ' + fmtKB(d.storage.limitBytes) + ' used. Up to ' + d.maxApps + ' applications; new records are refused before the platform limit is hit.' }))),
+    h('p', { style: 'color:var(--muted);font-size:13px', text: 'Visitor statistics are intentionally not shown: this portal does not track visits, so any number would be invented.' }));
+}
+
+/* ---------- Applications ---------- */
+async function pgApps() {
+  const d = await adminCall('listApps');
+  state.apps = d.apps; state.cats = d.categories; state.meta = { max: d.maxApps, qrForNew: d.qrForNew, defaultCategory: d.defaultCategory };
+  renderApps(d.corrupted);
+}
+
+function renderApps(corrupted) {
+  const catName = id => { const c = state.cats.filter(x => x.id === id)[0]; return c ? c.name : 'Unassigned'; };
+  const filter = h('input', { type: 'search', 'aria-label': 'Filter applications', placeholder: 'Filter applications…', style: 'max-width:320px', value: state.adminFilter || '' });
+  const list = h('div', { class: 'box' });
+  const draw = () => {
+    state.adminFilter = filter.value;
+    const q = filter.value.trim().toLowerCase();
+    const items = state.apps.map((a, i) => ({ a, i })).filter(x => !q || (x.a.name + ' ' + x.a.url + ' ' + catName(x.a.cat)).toLowerCase().indexOf(q) >= 0);
+    if (!items.length) { list.replaceChildren(h('div', { class: 'panel', style: 'border:0' }, icon('folder', 36), h('h3', { text: state.apps.length ? 'No matching applications' : 'No applications yet' }), h('p', { text: state.apps.length ? 'Adjust the filter.' : 'Add your first application to make it appear on the public portal.' }))); return; }
+    list.replaceChildren(...items.map(({ a, i }) => h('div', { class: 'row' },
+      h('div', { class: 'tile', style: 'width:42px;height:42px' }, icon(a.icon, 20)),
+      h('div', { class: 'grow' }, h('div', { class: 't' }, (i + 1) + '. ' + a.name, ' ', h('span', { class: 'pill ' + (a.active ? 'on' : 'off'), text: a.active ? 'Active' : 'Inactive' }), a.qr ? ' ' : null, a.qr ? h('span', { class: 'pill qr', text: 'QR' }) : null),
+        h('div', { class: 's', text: catName(a.cat) + ' · ' + a.url })),
+      h('div', { class: 'acts' },
+        h('button', { class: 'btn ghost icon', type: 'button', 'aria-label': 'Move ' + a.name + ' up', disabled: i === 0 || !!q, onclick: () => moveApp(i, -1) }, icon('up', 16)),
+        h('button', { class: 'btn ghost icon', type: 'button', 'aria-label': 'Move ' + a.name + ' down', disabled: i === state.apps.length - 1 || !!q, onclick: () => moveApp(i, 1) }, icon('down', 16)),
+        a.qr ? h('button', { class: 'btn ghost sm', type: 'button', onclick: () => openQr(a, true) }, icon('qr', 15), 'QR') : null,
+        h('button', { class: 'btn ghost sm', type: 'button', onclick: () => openAppForm(a) }, icon('edit', 15), 'Edit'),
+        h('button', { class: 'btn ghost sm', type: 'button', onclick: () => toggleApp(a) }, a.active ? 'Deactivate' : 'Activate'),
+        h('button', { class: 'btn danger sm', type: 'button', onclick: () => deleteApp(a) }, icon('trash', 15), 'Delete')))));
+  };
+  filter.addEventListener('input', draw);
+  ui.content.replaceChildren(
+    pageHead('Applications', state.apps.length + ' of ' + state.meta.max + ' used. Reorder with the arrows; the order is saved immediately.', h('button', { class: 'btn primary', type: 'button', onclick: () => openAppForm(null) }, icon('plus', 16), 'Add application')),
+    corrupted ? h('div', { class: 'alert warn', text: corrupted + ' stored record(s) could not be read and were skipped.' }) : null,
+    h('div', { style: 'margin-bottom:14px' }, filter), list);
+  draw();
+}
+
+async function moveApp(i, dir) {
+  const j = i + dir; if (j < 0 || j >= state.apps.length) return;
+  const ids = state.apps.map(a => a.id); [ids[i], ids[j]] = [ids[j], ids[i]];
+  try { const r = await adminCall('reorderApps', { ids }); state.apps = r.apps; renderApps(); toast('Order saved.', 'ok'); }
+  catch (e) { toast(e.message, 'err'); }
+}
+async function toggleApp(a) {
+  try { const r = await adminCall('toggleApp', { id: a.id, active: !a.active }); state.apps = r.apps; renderApps(); toast(a.name + (a.active ? ' deactivated (hidden from the public portal).' : ' activated.'), 'ok'); }
+  catch (e) { toast(e.message, 'err'); }
+}
+async function deleteApp(a) {
+  if (!(await confirmDialog({ title: 'Delete application?', message: '“' + a.name + '” will be permanently deleted. This cannot be undone. To hide it temporarily, use Deactivate instead.', confirmText: 'Delete permanently', danger: true }))) return;
+  try { const r = await adminCall('deleteApp', { id: a.id }); state.apps = r.apps; renderApps(); toast('Application deleted.', 'ok'); }
+  catch (e) { toast(e.message, 'err'); }
+}
+
+function fieldWrap(label, id, input, hint) {
+  const err = h('div', { class: 'err', id: id + '-e', 'aria-live': 'polite' });
+  input.setAttribute('aria-describedby', id + '-e');
+  return { el: h('div', { class: 'field' }, h('label', { for: id, text: label }), input, hint ? h('div', { class: 'hint', text: hint }) : null, err), input, err };
+}
+
+function openAppForm(app) {
+  const isNew = !app;
+  if (isNew && state.apps.length >= state.meta.max) { toast('Maximum of ' + state.meta.max + ' applications reached.', 'err'); return; }
+  const v = app || { name: '', url: '', desc: '', cat: (state.cats.some(c => c.id === state.meta.defaultCategory) ? state.meta.defaultCategory : (state.cats[0] || {}).id), icon: 'grid', label: '', active: true, qr: !!state.meta.qrForNew, notes: '' };
+  const idx = app ? state.apps.findIndex(a => a.id === app.id) : state.apps.length;
+  const f = {
+    name: fieldWrap('Application name *', 'af-name', h('input', { type: 'text', id: 'af-name', maxlength: '60', value: v.name })),
+    url: fieldWrap('Application URL *', 'af-url', h('input', { type: 'url', id: 'af-url', maxlength: '1000', placeholder: 'https://script.google.com/macros/s/…/exec', value: v.url }), 'Must start with http:// or https://.'),
+    desc: fieldWrap('Short description *', 'af-desc', h('textarea', { id: 'af-desc', maxlength: '200' }, v.desc), 'Up to 200 characters.'),
+    cat: fieldWrap('Category *', 'af-cat', h('select', { id: 'af-cat' }, state.cats.map(c => h('option', { value: c.id, selected: c.id === v.cat, text: c.name })))),
+    label: fieldWrap('Display label (optional)', 'af-label', h('input', { type: 'text', id: 'af-label', maxlength: '24', placeholder: 'e.g. Staff only', value: v.label }), 'A small badge on the card.'),
+    order: fieldWrap('Display order', 'af-order', h('input', { type: 'number', id: 'af-order', min: '1', max: String(state.apps.length + (isNew ? 1 : 0)), value: String(idx + 1) }), '1 = first.'),
+    notes: fieldWrap('Administrator notes (optional, never shown publicly)', 'af-notes', h('textarea', { id: 'af-notes', maxlength: '300' }, v.notes))
+  };
+  let chosen = v.icon;
+  const pick = h('div', { class: 'iconpick', role: 'radiogroup', 'aria-label': 'Icon' });
+  const drawPick = () => pick.replaceChildren(...ICON_CHOICES.map(n => h('button', { type: 'button', role: 'radio', 'aria-checked': String(n === chosen), 'aria-label': n, title: n, onclick: () => { chosen = n; drawPick(); } }, icon(n, 20))));
+  drawPick();
+  const active = h('input', { type: 'checkbox', id: 'af-active' }); active.checked = !!v.active;
+  const qr = h('input', { type: 'checkbox', id: 'af-qr' }); qr.checked = !!v.qr;
+  const formErr = h('div', { class: 'alert err', role: 'alert', style: 'display:none' });
+  const chk = h('div', { class: 'alert info', style: 'display:none' });
+  const checkBtn = h('button', { class: 'btn ghost sm', type: 'button', style: 'margin-top:6px' }, icon('link', 15), 'Check link');
+  checkBtn.addEventListener('click', async () => {
+    const u = f.url.input.value.trim(); if (!isHttpUrl(u)) { f.url.err.textContent = 'Enter a valid http(s) URL first.'; return; }
+    chk.style.display = ''; chk.replaceChildren(h('span', { class: 'spin sm' }), 'Checking…');
+    try { const r = await adminCall('checkUrl', { url: u }); chk.textContent = r.message; } catch (e) { chk.textContent = e.message; }
+  });
+  f.url.el.append(checkBtn, chk);
+  const body = h('form', { novalidate: true, id: 'appForm' }, formErr, f.name.el, f.url.el, f.desc.el,
+    h('div', { class: 'cols2' }, f.cat.el, f.label.el),
+    h('div', { class: 'field' }, h('label', { text: 'Icon' }), pick),
+    h('div', { class: 'cols2' }, f.order.el, h('div')),
+    h('label', { class: 'check', for: 'af-active' }, active, h('span', null, 'Active', h('small', { text: 'Inactive applications are hidden from the public homepage.' }))),
+    h('label', { class: 'check', for: 'af-qr' }, qr, h('span', null, 'Enable QR code', h('small', { text: 'Shows a “Show QR Code” button. The QR encodes the saved URL and updates automatically if the URL changes. It only opens the link; the app’s own sign-in still applies.' }))),
+    f.notes.el);
+  const save = h('button', { class: 'btn primary', type: 'submit', form: 'appForm' }, isNew ? 'Add application' : 'Save changes');
+  const cancel = h('button', { class: 'btn ghost', type: 'button', text: 'Cancel' });
+  const m = openModal({ title: isNew ? 'Add application' : 'Edit application', body: body, footer: [cancel, save], wide: true, sticky: true, focus: '#af-name' });
+  cancel.addEventListener('click', m.close);
+  body.addEventListener('submit', async ev => {
+    ev.preventDefault(); formErr.style.display = 'none';
+    Object.values(f).forEach(x => { x.err.textContent = ''; x.input.classList.remove('bad'); });
+    let bad = null;
+    const need = (x, msg) => { x.err.textContent = msg; x.input.classList.add('bad'); if (!bad) bad = x.input; };
+    const name = f.name.input.value.trim(), url = f.url.input.value.trim(), desc = f.desc.input.value.trim();
+    if (name.length < 2 || name.length > 60) need(f.name, 'Enter a name of 2-60 characters.');
+    if (!url) need(f.url, 'Enter the application URL.');
+    else if (!isHttpUrl(url) || /^https?:\/\/[^\/?#]*@/i.test(url)) need(f.url, 'Enter a valid web address starting with http:// or https:// (no spaces, no username/password).');
+    const R = state.formRules || { desc: true, label: false, notes: false };
+    if (R.desc ? (desc.length < 5 || desc.length > 200) : desc.length > 200) need(f.desc, R.desc ? 'Enter a description of 5-200 characters.' : 'The description must be 200 characters or fewer.');
+    if (R.label && !f.label.input.value.trim()) need(f.label, 'Enter a display label.');
+    if (R.notes && !f.notes.input.value.trim()) need(f.notes, 'Enter administrator notes.');
+    if (!f.cat.input.value) need(f.cat, 'Choose a category.');
+    const ord = parseInt(f.order.input.value, 10);
+    if (isNaN(ord) || ord < 1) need(f.order, 'Enter a whole number of 1 or more.');
+    if (bad) { bad.focus(); return; }
+    save.disabled = true; save.replaceChildren(h('span', { class: 'spin sm' }), 'Saving…');
+    try {
+      const r = await adminCall('saveApp', { id: app ? app.id : undefined, name, url, desc, cat: f.cat.input.value, icon: chosen, label: f.label.input.value.trim(), active: active.checked, qr: qr.checked, notes: f.notes.input.value.trim(), order: ord });
+      state.apps = r.apps; m.close(); if (state.page === 'apps') renderApps(); toast(isNew ? 'Application added.' : 'Changes saved.', 'ok');
+    } catch (e) { if (e.code === 'SESSION') { m.close(); return; } formErr.textContent = e.message; formErr.style.display = ''; save.disabled = false; save.replaceChildren(isNew ? 'Add application' : 'Save changes'); }
+  });
+}
+
+/* ---------- Categories ---------- */
+async function pgCats() {
+  const d = await adminCall('listCategories');
+  state.cats = d.categories; state.catMax = d.max; renderCats();
+}
+function renderCats() {
+  ui.content.replaceChildren(
+    pageHead('Categories', 'Categories drive the filter chips on the public portal. Only categories with active applications are shown publicly.', h('button', { class: 'btn primary', type: 'button', onclick: () => openCatForm(null) }, icon('plus', 16), 'Add category')),
+    h('div', { class: 'box' }, state.cats.map((c, i) => h('div', { class: 'row' },
+      h('div', { class: 'tile', style: 'width:42px;height:42px' }, icon(c.icon, 20)),
+      h('div', { class: 'grow' }, h('div', { class: 't', text: c.name }), h('div', { class: 's', text: c.count + ' application' + (c.count === 1 ? '' : 's') })),
+      h('div', { class: 'acts' },
+        h('button', { class: 'btn ghost icon', type: 'button', 'aria-label': 'Move ' + c.name + ' up', disabled: i === 0, onclick: () => moveCat(i, -1) }, icon('up', 16)),
+        h('button', { class: 'btn ghost icon', type: 'button', 'aria-label': 'Move ' + c.name + ' down', disabled: i === state.cats.length - 1, onclick: () => moveCat(i, 1) }, icon('down', 16)),
+        h('button', { class: 'btn ghost sm', type: 'button', onclick: () => openCatForm(c) }, icon('edit', 15), 'Edit'),
+        h('button', { class: 'btn danger sm', type: 'button', onclick: () => deleteCat(c) }, icon('trash', 15), 'Delete'))))));
+}
+async function moveCat(i, dir) {
+  const j = i + dir; const ids = state.cats.map(c => c.id); [ids[i], ids[j]] = [ids[j], ids[i]];
+  try { state.cats = (await adminCall('reorderCategories', { ids })).categories; renderCats(); toast('Category order saved.', 'ok'); } catch (e) { toast(e.message, 'err'); }
+}
+function openCatForm(c) {
+  const isNew = !c; let chosen = c ? c.icon : 'tag';
+  const name = fieldWrap('Category name *', 'cf-name', h('input', { type: 'text', id: 'cf-name', maxlength: '40', value: c ? c.name : '' }));
+  const pick = h('div', { class: 'iconpick', role: 'radiogroup', 'aria-label': 'Icon' });
+  const drawPick = () => pick.replaceChildren(...ICON_CHOICES.map(n => h('button', { type: 'button', role: 'radio', 'aria-checked': String(n === chosen), 'aria-label': n, title: n, onclick: () => { chosen = n; drawPick(); } }, icon(n, 20))));
+  drawPick();
+  const err = h('div', { class: 'alert err', role: 'alert', style: 'display:none' });
+  const form = h('form', { id: 'catForm', novalidate: true }, err, name.el, h('div', { class: 'field' }, h('label', { text: 'Icon' }), pick));
+  const save = h('button', { class: 'btn primary', type: 'submit', form: 'catForm' }, isNew ? 'Add category' : 'Save');
+  const cancel = h('button', { class: 'btn ghost', type: 'button', text: 'Cancel' });
+  const m = openModal({ title: isNew ? 'Add category' : 'Edit category', body: form, footer: [cancel, save], sticky: true, focus: '#cf-name' });
+  cancel.addEventListener('click', m.close);
+  form.addEventListener('submit', async ev => {
+    ev.preventDefault(); err.style.display = 'none'; name.err.textContent = ''; name.input.classList.remove('bad');
+    const n = name.input.value.trim();
+    if (n.length < 2 || n.length > 40) { name.err.textContent = 'Enter a name of 2-40 characters.'; name.input.classList.add('bad'); name.input.focus(); return; }
+    save.disabled = true;
+    try { state.cats = (await adminCall('saveCategory', { id: c ? c.id : undefined, name: n, icon: chosen })).categories; m.close(); renderCats(); toast(isNew ? 'Category added.' : 'Category saved.', 'ok'); }
+    catch (e) { if (e.code === 'SESSION') { m.close(); return; } err.textContent = e.message; err.style.display = ''; save.disabled = false; }
+  });
+}
+async function deleteCat(c) {
+  if (state.cats.length <= 1) { toast('At least one category must remain.', 'err'); return; }
+  if (c.count === 0) {
+    if (!(await confirmDialog({ title: 'Delete category?', message: '“' + c.name + '” will be permanently deleted.', confirmText: 'Delete', danger: true }))) return;
+    try { state.cats = (await adminCall('deleteCategory', { id: c.id })).categories; renderCats(); toast('Category deleted.', 'ok'); } catch (e) { toast(e.message, 'err'); }
+    return;
+  }
+  const sel = h('select', { id: 'rc', 'aria-label': 'Move applications to' }, state.cats.filter(x => x.id !== c.id).map(x => h('option', { value: x.id, text: x.name })));
+  const yes = h('button', { class: 'btn danger-solid', type: 'button', text: 'Move apps and delete' });
+  const no = h('button', { class: 'btn ghost', type: 'button', text: 'Cancel' });
+  const m = openModal({ title: 'Reassign applications first', body: h('div', null, h('p', { style: 'margin-top:0', text: c.count + ' application(s) use “' + c.name + '”. Choose where to move them before this category is deleted.' }), h('div', { class: 'field' }, h('label', { for: 'rc', text: 'Move applications to' }), sel)), footer: [no, yes] });
+  no.addEventListener('click', m.close);
+  yes.addEventListener('click', async () => {
+    yes.disabled = true;
+    try { state.cats = (await adminCall('deleteCategory', { id: c.id, reassignTo: sel.value })).categories; m.close(); renderCats(); toast('Category deleted; applications moved.', 'ok'); }
+    catch (e) { yes.disabled = false; toast(e.message, 'err'); }
+  });
+}
+
+/* ---------- Settings ---------- */
+async function pgSettings() {
+  const d = await adminCall('getSettings');
+  const s = d.settings;
+  const mk = (label, id, input, hint) => fieldWrap(label, id, input, hint);
+  const f = {
+    portalName: mk('Portal name', 's-name', h('input', { type: 'text', id: 's-name', maxlength: '80', value: s.portalName })),
+    tagline: mk('Tagline', 's-tag', h('input', { type: 'text', id: 's-tag', maxlength: '120', value: s.tagline })),
+    description: mk('Portal description', 's-desc', h('textarea', { id: 's-desc', maxlength: '300' }, s.description)),
+    monogram: mk('Logo monogram', 's-mono', h('input', { type: 'text', id: 's-mono', maxlength: '3', value: s.monogram }), '1-3 letters shown in the logo tile.'),
+    footerText: mk('Footer text', 's-foot', h('input', { type: 'text', id: 's-foot', maxlength: '120', value: s.footerText }), 'The year is added automatically.'),
+    accent: mk('Colour theme', 's-acc', h('select', { id: 's-acc' }, [['navy', 'Navy & blue'], ['blue', 'Corporate blue'], ['teal', 'Navy & teal']].map(o => h('option', { value: o[0], selected: o[0] === s.accent, text: o[1] })))),
+    layout: mk('Default card layout', 's-lay', h('select', { id: 's-lay' }, [['grid', 'Grid'], ['list', 'List'], ['compact', 'Compact grid']].map(o => h('option', { value: o[0], selected: o[0] === s.cardLayout, text: o[1] })))),
+    defCat: mk('Default category filter', 's-dc', h('select', { id: 's-dc' }, [h('option', { value: 'all', selected: s.defaultCategory === 'all', text: 'All categories' })].concat(d.categories.map(c => h('option', { value: c.id, selected: c.id === s.defaultCategory, text: c.name }))))),
+    refresh: mk('Public homepage auto-refresh', 's-rf', h('select', { id: 's-rf' }, [[0, 'Manual refresh only'], [1, 'Every minute'], [5, 'Every 5 minutes'], [15, 'Every 15 minutes'], [30, 'Every 30 minutes']].map(o => h('option', { value: o[0], selected: o[0] === s.refreshMinutes, text: o[1] })))),
+    qrSize: mk('QR code size', 's-qs', h('select', { id: 's-qs' }, [240, 300, 360, 420].map(n => h('option', { value: n, selected: n === s.qr.size, text: n + ' px' })))),
+    email: mk('Administrator email', 's-em', h('input', { type: 'email', id: 's-em', value: d.adminEmail, autocomplete: 'off' }), 'Used for sign-in. Changing it requires your current password.'),
+    emailPw: mk('Current password (only if changing email)', 's-ep', h('input', { type: 'password', id: 's-ep', autocomplete: 'current-password' }))
+  };
+  const cap = h('input', { type: 'checkbox', id: 's-cap' }); cap.checked = !!s.qr.caption;
+  const qn = h('input', { type: 'checkbox', id: 's-qn' }); qn.checked = !!s.qr.enableForNew;
+  const err = h('div', { class: 'alert err', role: 'alert', style: 'display:none' });
+  const save = h('button', { class: 'btn primary', type: 'submit' }, 'Save settings');
+  const reset = h('button', { class: 'btn ghost', type: 'button' }, 'Restore display defaults');
+  const form = h('form', { novalidate: true }, err,
+    h('div', { class: 'box' }, h('h3', { text: 'Portal & branding' }), f.portalName.el, f.tagline.el, f.description.el, h('div', { class: 'cols2' }, f.monogram.el, f.accent.el), f.footerText.el),
+    h('div', { class: 'box' }, h('h3', { text: 'Display' }), h('div', { class: 'cols2' }, f.layout.el, f.defCat.el), f.refresh.el),
+    h('div', { class: 'box' }, h('h3', { text: 'QR code preferences' }), f.qrSize.el,
+      h('label', { class: 'check', for: 's-cap' }, cap, h('span', null, 'Show scanning instruction under the QR code')),
+      h('label', { class: 'check', for: 's-qn' }, qn, h('span', null, 'Enable QR code by default for new applications'))),
+    h('div', { class: 'box' }, h('h3', { text: 'Administrator account' }), h('div', { class: 'cols2' }, f.email.el, f.emailPw.el)),
+    h('div', { class: 'shortcuts' }, save, reset));
+  form.addEventListener('submit', async ev => {
+    ev.preventDefault(); err.style.display = 'none';
+    const fail = (x, m) => { err.textContent = m; err.style.display = ''; if (x) x.focus(); };
+    if (f.portalName.input.value.trim().length < 3) return fail(f.portalName.input, 'Portal name must be at least 3 characters.');
+    if (!/^[A-Za-z0-9]{1,3}$/.test(f.monogram.input.value.trim())) return fail(f.monogram.input, 'Monogram must be 1-3 letters or digits.');
+    const emailChanged = f.email.input.value.trim().toLowerCase() !== d.adminEmail;
+    if (emailChanged && !f.emailPw.input.value) return fail(f.emailPw.input, 'Enter your current password to change the administrator email.');
+    save.disabled = true; save.replaceChildren(h('span', { class: 'spin sm' }), 'Saving…');
+    try {
+      const r = await adminCall('saveSettings', {
+        settings: { portalName: f.portalName.input.value, tagline: f.tagline.input.value, description: f.description.input.value, monogram: f.monogram.input.value, accent: f.accent.input.value, cardLayout: f.layout.input.value, defaultCategory: f.defCat.input.value, refreshMinutes: parseInt(f.refresh.input.value, 10), footerText: f.footerText.input.value, qr: { size: parseInt(f.qrSize.input.value, 10), caption: cap.checked, enableForNew: qn.checked } },
+        adminEmail: f.email.input.value, currentPassword: f.emailPw.input.value });
+      f.emailPw.input.value = ''; state.email = r.adminEmail; state.pub = null; document.documentElement.dataset.accent = r.settings.accent; toast('Settings saved. They apply immediately.', 'ok'); gotoAdmin('settings');
+    } catch (e) { if (e.code === 'SESSION') return; fail(null, e.message); save.disabled = false; save.replaceChildren('Save settings'); }
+  });
+  reset.addEventListener('click', async () => {
+    if (!(await confirmDialog({ title: 'Restore display defaults?', message: 'Colour theme, card layout, default category, auto-refresh and QR preferences return to their defaults. Names and text are kept.', confirmText: 'Restore' }))) return;
+    try { await adminCall('resetDisplay'); state.pub = null; toast('Display defaults restored.', 'ok'); gotoAdmin('settings'); } catch (e) { toast(e.message, 'err'); }
+  });
+  ui.content.replaceChildren(pageHead('Settings', 'Stored in Script Properties and effective immediately; no redeployment needed.'), form, passwordBox());
+}
+
+function passwordBox() {
+  const cur = h('input', { type: 'password', id: 'pc', autocomplete: 'current-password' });
+  const n1 = h('input', { type: 'password', id: 'pn', autocomplete: 'new-password' });
+  const n2 = h('input', { type: 'password', id: 'pn2', autocomplete: 'new-password' });
+  const msg = h('div', { class: 'alert err', role: 'alert', style: 'display:none' });
+  const btn = h('button', { class: 'btn primary', type: 'submit' }, 'Change password');
+  const form = h('form', { class: 'box', novalidate: true }, h('h3', { text: 'Change administrator password' }), msg,
+    h('div', { class: 'cols2' }, h('div', { class: 'field' }, h('label', { for: 'pc', text: 'Current password' }), cur), h('div')),
+    h('div', { class: 'cols2' }, h('div', { class: 'field' }, h('label', { for: 'pn', text: 'New password' }), n1, h('div', { class: 'hint', text: '8 or more characters.' })), h('div', { class: 'field' }, h('label', { for: 'pn2', text: 'Confirm new password' }), n2)),
+    h('p', { style: 'color:var(--muted);font-size:13px;margin-top:0', text: 'All other signed-in sessions are signed out after a password change.' }), btn);
+  form.addEventListener('submit', async ev => {
+    ev.preventDefault(); msg.style.display = 'none';
+    const fail = m => { msg.className = 'alert err'; msg.textContent = m; msg.style.display = ''; };
+    if (!cur.value) return fail('Enter your current password.');
+    if (n1.value.length < 8) return fail('New password needs 8 or more characters.');
+    if (n1.value !== n2.value) return fail('The new passwords do not match.');
+    btn.disabled = true; btn.replaceChildren(h('span', { class: 'spin sm' }), 'Updating…');
+    try { await adminCall('changePassword', { currentPassword: cur.value, newPassword: n1.value, confirmPassword: n2.value }); cur.value = n1.value = n2.value = ''; toast('Password changed.', 'ok'); }
+    catch (e) { if (e.code !== 'SESSION') fail(e.message); }
+    btn.disabled = false; btn.replaceChildren('Change password');
+  });
+  return form;
+}
+
+/* ---------- Activity log ---------- */
+const LOG_LABELS = { LOGIN_OK: ['Sign-in', 'grn'], LOGIN_FAIL: ['Failed sign-in', 'red'], LOGOUT: ['Sign-out'], APP_CREATED: ['App created', 'grn'], APP_UPDATED: ['App updated'], APP_ACTIVATED: ['App activated'], APP_DEACTIVATED: ['App deactivated'], APP_DELETED: ['App deleted', 'red'], APPS_REORDERED: ['Apps reordered'], CATEGORY_CREATED: ['Category created', 'grn'], CATEGORY_UPDATED: ['Category updated'], CATEGORY_DELETED: ['Category deleted', 'red'], CATEGORIES_REORDERED: ['Categories reordered'], SETTINGS_CHANGED: ['Settings changed'], PASSWORD_CHANGED: ['Password changed'], PWD_VERIFY_FAIL: ['Wrong password', 'red'], ADMIN_EMAIL_CHANGED: ['Admin email changed'], ADMIN_SETUP: ['Admin set up', 'grn'], ADMIN_RESET: ['Admin reset', 'red'], SETUP_FAIL: ['Failed setup', 'red'] };
+async function pgLog() {
+  const d = await adminCall('listLog');
+  ui.content.replaceChildren(
+    pageHead('Activity log', 'Newest first. Passwords, hashes and session tokens are never recorded. The log keeps at most ' + d.max + ' entries (fewer if they exceed the storage budget); older entries are discarded automatically.', h('button', { class: 'btn ghost', type: 'button', onclick: () => gotoAdmin('log') }, icon('refresh', 16), 'Refresh')),
+    h('div', { class: 'box', style: 'overflow-x:auto' }, d.entries.length
+      ? h('table', { class: 'log' }, h('thead', null, h('tr', null, ['When', 'Action', 'Record', 'Details'].map(t => h('th', { scope: 'col', text: t })))),
+          h('tbody', null, d.entries.map(e => { const l = LOG_LABELS[e.a] || [e.a]; return h('tr', null, h('td', { text: fmtTime(e.t), style: 'white-space:nowrap' }), h('td', null, h('span', { class: 'tag ' + (l[1] || ''), text: l[0] })), h('td', { text: e.r }), h('td', { text: e.d })); })))
+      : h('p', { style: 'margin:0;color:var(--muted)', text: 'No activity recorded yet.' })));
+}
+
+/* ===== Public portal redesign. Paste in <script>, on its own lines just ABOVE the "BOOT" comment block.
+   These redefine functions that already exist; the later definition wins, so nothing needs deleting. ===== */
+
+// Stops the literal word "null" appearing in admin pages
+(function () { const o = Element.prototype.replaceChildren; Element.prototype.replaceChildren = function (...n) { return o.apply(this, n.filter(x => x != null && x !== false)); }; })();
+
+const APP_COLORS = [['#2f7bf0', '#0b4fc2'], ['#14a37f', '#087a5c'], ['#8b5cf6', '#5b32a8'], ['#f59a2b', '#d56a00'], ['#e5384f', '#b3162f'], ['#3b4658', '#1f2937'], ['#10a3c0', '#0a7a91'], ['#d02fae', '#9b1a82']];
+function appColor(id) { let n = 0; for (let i = 0; i < id.length; i++) n = (n * 31 + id.charCodeAt(i)) >>> 0; return APP_COLORS[n % APP_COLORS.length]; }
+
+function drawTools() {
+  const seg = h('div', { class: 'pp-seg', role: 'group', 'aria-label': 'Layout' },
+    h('button', { type: 'button', 'aria-label': 'Grid view', 'aria-pressed': String(state.layout !== 'list'), onclick: () => { state.layout = 'grid'; drawTools(); updatePublicList(); } }, icon('grid', 16)),
+    h('button', { type: 'button', 'aria-label': 'List view', 'aria-pressed': String(state.layout === 'list'), onclick: () => { state.layout = 'list'; drawTools(); updatePublicList(); } }, icon('clipboard', 16)));
+  const sort = h('select', { 'aria-label': 'Sort applications', onchange: e => { state.sort = e.target.value; updatePublicList(); } },
+    h('option', { value: 'default', selected: state.sort !== 'name', text: 'Sort: Default' }),
+    h('option', { value: 'name', selected: state.sort === 'name', text: 'Sort: Name A-Z' }));
+  ui.tools.replaceChildren(seg, sort);
+}
+
+function renderPublic() {
+  stopTimers(); state.view = 'public';
+  const s = S();
+  if (!state.layout) state.layout = s.cardLayout === 'list' ? 'list' : 'grid';
+  const search = h('input', { type: 'search', id: 'q', placeholder: 'Search applications…', 'aria-label': 'Search applications', autocomplete: 'off', value: state.query });
+  search.addEventListener('input', () => { state.query = search.value; updatePublicList(); });
+  ui.status = h('div', { 'aria-live': 'polite' });
+  ui.chips = h('div', { class: 'pp-chips', role: 'group', 'aria-label': 'Filter by category' });
+  ui.grid = h('div', { class: 'grid' });
+  ui.tools = h('div', { class: 'pp-tools' });
+  ui.stats = h('div', { class: 'pp-box' });
+  ui.main = h('div', { id: 'main', tabindex: '-1' }, ui.status, ui.grid);
+  ui.panel = h('section', { class: 'pp-panel' }, h('div', { class: 'pp-panel-h' }, h('h2', { text: 'Business applications' }), ui.tools), ui.main);
+  drawTools();
+  const feat = (ic, t, d) => h('div', { class: 'pp-feat' }, h('div', { class: 'ci' }, icon(ic, 22)), h('div', null, h('b', { text: t }), h('span', { text: d })));
+   mount(h('div', null,
+    h('header', { class: 'pp-top' }, h('div', { class: 'pp-wrap pp-top-in' }, brand(false),
+      h('nav', { class: 'pp-nav', 'aria-label': 'Primary' },
+        h('button', { type: 'button', 'aria-current': 'page', onclick: () => window.scrollTo({ top: 0, behavior: 'smooth' }) }, icon('home', 18), 'Home'),
+        h('button', { type: 'button', onclick: () => ui.panel.scrollIntoView({ behavior: 'smooth' }) }, icon('grid', 18), 'All Apps')),
+      h('div', { class: 'pp-top-r' },
+        h('button', { class: 'pp-icbtn', type: 'button', 'aria-label': 'Refresh applications', onclick: () => loadPublic(true) }, icon('refresh', 22)),
+        h('button', { class: 'pp-icbtn', type: 'button', 'aria-label': 'Search applications', onclick: () => { ui.panel.scrollIntoView({ behavior: 'smooth' }); search.focus(); } }, icon('search', 22)),
+        h('button', { class: 'pp-admin', type: 'button', onclick: () => showLogin() }, icon('lock', 16), 'Admin Login')))),
+    h('section', { class: 'hero pp-hero' }, h('div', { class: 'pp-wrap pp-hero-in' },
+      h('div', null,
+        h('div', { class: 'pp-welcome', text: 'Welcome to' }),
+        h('h1', { text: s.portalName }),
+        h('p', { text: s.description || '' }),
+        h('div', { class: 'pp-feats' },
+          feat('link', 'Easy access', 'All tools in one place'),
+          feat('shield', 'Secure & reliable', 'Each app keeps its own sign-in'),
+          feat('users', 'Work smarter', 'Boost productivity'))),
+      h('div', { class: 'pp-glass' }, h('h3', { text: 'Your business, simplified' }), h('div', { text: 'Access all essential tools and applications for daily operations, management and growth.' })))),
+    h('div', { class: 'pp-wrap pp-body' },
+      h('div', null,
+        h('div', { class: 'pp-filterbar' }, h('div', { class: 'pp-search' }, icon('search', 20), search), ui.chips),
+        ui.panel),
+      h('aside', { class: 'pp-side', 'aria-label': 'Quick stats' }, ui.stats)),
+    h('footer', { class: 'site' }, h('div', { class: 'wrap' }, h('span', { text: '© ' + new Date().getFullYear() + ' ' + (s.footerText || '') }),
+      h('span', null, 'Each application keeps its own sign-in and permissions. ', h('button', { class: 'lnk', type: 'button', onclick: () => showLogin() }, 'Administrator'))))));
+  applyBranding();
+  if (state.pub) updatePublicList();
+  loadPublic(false);
+}
+
+function updatePublicList() {
+  if (!state.pub || !ui.grid) return;
+  const p = state.pub;
+  if (state.cat !== 'all' && !p.categories.some(c => c.id === state.cat)) state.cat = 'all';
+  ui.chips.replaceChildren(chip('All', 'all', p.apps.length, 'grid'), ...p.categories.map(c => chip(c.name, c.id, c.count, c.icon)));
+  const q = state.query.trim().toLowerCase();
+  let list = p.apps.filter(a => {
+    if (state.cat !== 'all' && a.cat !== state.cat) return false;
+    if (!q) return true;
+    const c = catById(a.cat);
+    return (a.name + ' ' + a.desc + ' ' + (a.label || '') + ' ' + (c ? c.name : '')).toLowerCase().indexOf(q) >= 0;
+  });
+  if (state.sort === 'name') list = list.slice().sort((a, b) => a.name.localeCompare(b.name));
+  ui.grid.className = 'grid' + (state.layout === 'list' ? ' list' : '');
+  ui.status.replaceChildren(h('div', { class: 'status-line' }, h('span', { text: list.length + ' of ' + p.apps.length + ' application' + (p.apps.length === 1 ? '' : 's') + ' shown' }), h('span', { text: 'Updated ' + new Date(p.generatedAt).toLocaleTimeString() })));
+  const st = (ic, n, label) => h('div', { class: 'pp-stat' }, h('div', { class: 'ci' }, icon(ic, 20)), h('div', null, h('b', { text: String(n) }), h('span', { text: label })));
+  if (ui.stats) ui.stats.replaceChildren(h('h3', null, icon('chart', 20), 'Quick stats'),
+    st('grid', p.apps.length, 'Applications available'), st('tag', p.categories.length, 'Categories'), st('qr', p.apps.filter(a => a.qr).length, 'With QR access'));
+  if (!list.length) {
+    const none = !p.apps.length;
+    ui.grid.replaceChildren(h('div', { class: 'panel', style: 'grid-column:1/-1' }, icon(none ? 'folder' : 'search', 38),
+      h('h3', { text: none ? 'No applications are available yet' : 'No applications match your search' }),
+      h('p', { text: none ? 'The administrator has not published any applications. Please check back soon.' : 'Try different words, or clear the search and category filter.' }),
+      none ? null : h('button', { class: 'btn ghost', type: 'button', onclick: () => { state.query = ''; state.cat = 'all'; const i = $('#q'); if (i) i.value = ''; updatePublicList(); } }, 'Clear filters')));
+    return;
+  }
+  ui.grid.replaceChildren(...list.map(appCard));
+}
+
+function appCard(a) {
+  const c = catById(a.cat), ok = isHttpUrl(a.url), col = appColor(a.id);
+  return h('article', { class: 'card pp-card' },
+    h('div', { class: 'card-top' },
+      h('div', { class: 'pp-tile', style: 'background:linear-gradient(135deg,' + col[0] + ',' + col[1] + ')' }, icon(a.icon, 30)),
+      h('div', { style: 'min-width:0' }, h('h3', { text: a.name }), h('span', { class: 'pp-cat', text: c ? c.name : 'Other' }), a.label ? h('span', { class: 'pp-label', text: a.label }) : null)),
+    h('p', { class: 'desc', text: a.desc }),
+    h('div', { class: 'card-actions' },
+      ok ? h('a', { class: 'btn primary', href: a.url, target: '_blank', rel: 'noopener noreferrer', 'aria-label': 'Open ' + a.name + ' in a new tab' }, 'Open App', icon('external', 16))
+         : h('button', { class: 'btn primary', type: 'button', disabled: true }, 'Link unavailable'),
+      a.qr ? h('button', { class: 'btn pp-soft', type: 'button', onclick: () => openQr(a, false) }, icon('qr', 16), 'QR Code') : null));
+}
+
+/* ===== Progress feedback: top bar, busy buttons, visible Log out ===== */
+let pendingCalls = 0;
+const topbarEl = (function () {
+  const el = document.createElement('div');
+  el.id = 'topbar'; el.setAttribute('aria-hidden', 'true');
+  el.appendChild(document.createElement('i'));
+  document.body.appendChild(el);
+  return el;
+})();
+function workStart() { pendingCalls++; topbarEl.classList.add('on'); document.body.classList.add('working'); }
+function workEnd() {
+  pendingCalls = Math.max(0, pendingCalls - 1);
+  if (!pendingCalls) {
+    topbarEl.classList.remove('on'); document.body.classList.remove('working');
+    document.querySelectorAll('.busy').forEach(b => b.classList.remove('busy'));
+  }
+}
+
+// Same as before, plus the progress bar.
+function rpc(fn, ...args) {
+  return new Promise((resolve, reject) => {
+    if (!(window.google && google.script && google.script.run)) { reject(Object.assign(new Error('This page must be opened from the deployed web app URL.'), { code: 'NOENV' })); return; }
+    workStart();
+    google.script.run
+      .withSuccessHandler(r => { workEnd(); if (r && r.ok) resolve(r.data); else reject(Object.assign(new Error((r && r.error) || 'The request failed.'), { code: r && r.code })); })
+      .withFailureHandler(() => { workEnd(); reject(Object.assign(new Error('Could not reach the server. Check your connection and try again.'), { code: 'NETWORK' })); })[fn](...args);
+  });
+}
+
+// Any button whose click starts a server request shows a spinner until the request ends.
+document.addEventListener('click', ev => {
+  const b = ev.target.closest && ev.target.closest('button.btn, button.nav-btn, button.pp-icbtn');
+  if (!b || b.disabled) return;
+  setTimeout(() => {
+    if (pendingCalls > 0 && document.body.contains(b) && !b.querySelector('.spin')) b.classList.add('busy');
+  }, 0);
+});
+
+// Log out: visible "Signing out..." state.
+async function doLogout() {
+  document.querySelectorAll('.side .nav-btn').forEach(b => { b.disabled = true; });
+  const lo = document.querySelector('.side .tail .nav-btn:last-child');
+  if (lo) lo.replaceChildren(h('span', { class: 'spin sm' }), 'Signing out…');
+  try { await rpc('apiAdmin', state.token, 'logout', {}); } catch (e) { /* session may already be gone */ }
+  endSession(); state.pub = null; toast('You have been signed out.', 'ok'); showLogin();
+}
+
+/* =====================================================================
+   ACCESS CODE GATE (browser side)
+   Paste inside the <script> of Index.html, just ABOVE the BOOT comment and
+   BELOW the progress-feedback block. Nothing else needs to change.
+   ===================================================================== */
+const BOOT_OPEN = <?!= JSON.stringify(typeof bootOpen === 'undefined' ? '' : bootOpen) ?>;
+
+/* ---------- nicer names in the Activity log ---------- */
+LOG_LABELS.GATE_CHANGED = ['Access code changed'];
+LOG_LABELS.GATE_LOCKED = ['Code locked', 'red'];
+
+/* ---------- public: code prompt ---------- */
+function gateDone(m, a, url) {
+  let w = null;
+  try { w = window.open(url, '_blank'); if (w) w.opener = null; } catch (e) { /* popup blocked */ }
+  if (w) { m.close(); toast('Opening ' + a.name + '…', 'ok'); return; }
+  m.el.querySelector('.modal-b').replaceChildren(
+    h('div', { class: 'alert ok', text: 'Code accepted.' }),
+    h('a', { class: 'btn primary', href: url, target: '_blank', rel: 'noopener noreferrer', style: 'width:100%' }, 'Open ' + a.name, icon('external', 16)));
+  m.el.querySelector('.modal-f').replaceChildren(h('button', { class: 'btn ghost', type: 'button', onclick: m.close }, 'Close'));
+}
+
+function openGate(a) {
+  const err = h('div', { class: 'alert err', role: 'alert', style: 'display:none' });
+  const code = h('input', { type: 'password', id: 'gc', inputmode: 'numeric', pattern: '[0-9]*', maxlength: '4', autocomplete: 'off', 'aria-label': '4-digit security code', style: 'text-align:center;font-size:26px;letter-spacing:12px;max-width:200px;margin:0 auto;display:block' });
+  const go = h('button', { class: 'btn primary', type: 'submit', form: 'gateForm' }, 'Continue');
+  const cancel = h('button', { class: 'btn ghost', type: 'button', text: 'Cancel' });
+  const form = h('form', { id: 'gateForm', novalidate: true }, err,
+    h('p', { style: 'margin:0 0 14px;text-align:center', text: 'Enter the 4-digit security code to open ' + a.name + '.' }), code);
+  const m = openModal({ title: 'Security code required', body: form, footer: [cancel, go], sticky: true, focus: '#gc' });
+  cancel.addEventListener('click', m.close);
+  code.addEventListener('input', () => { code.value = code.value.replace(/\D/g, '').slice(0, 4); });
+  form.addEventListener('submit', async ev => {
+    ev.preventDefault(); err.style.display = 'none';
+    if (code.value.length !== 4) { err.textContent = 'Enter all 4 digits.'; err.style.display = ''; code.focus(); return; }
+    go.disabled = true; go.replaceChildren(h('span', { class: 'spin sm' }), 'Checking…');
+    try {
+      const d = await rpc('apiUnlock', a.id, code.value);
+      code.value = '';
+      if (!isHttpUrl(d.url)) throw new Error('The saved link for this application is not valid.');
+      gateDone(m, a, d.url);
+    } catch (e) {
+      err.textContent = e.message; err.style.display = ''; code.value = '';
+      go.disabled = false; go.replaceChildren('Continue'); code.focus();
+    }
+  });
+}
+
+/* protected apps: "Open App" asks for the code instead of linking straight to the app */
+const _appCard = appCard;
+appCard = function (a) {
+  const el = _appCard(a);
+  if (a.locked) {
+    const old = el.querySelector('.card-actions .btn.primary');
+    const b = h('button', { class: 'btn primary', type: 'button', 'aria-label': 'Open ' + a.name + ' (security code required)', onclick: () => openGate(a) }, icon('lock', 16), 'Open App');
+    if (old) old.replaceWith(b);
+  }
+  return el;
+};
+
+/* QR scan of a protected app lands here with ?open=<id>: show the prompt automatically */
+let bootOpenDone = false;
+const _loadPublic = loadPublic;
+loadPublic = async function (manual) {
+  await _loadPublic(manual);
+  if (!BOOT_OPEN || bootOpenDone || !state.pub || state.view !== 'public') return;
+  bootOpenDone = true;
+  const a = state.pub.apps.filter(x => x.id === BOOT_OPEN)[0];
+  if (!a) { toast('That application is not available.', 'err'); return; }
+  if (a.restricted) openRestricted(a);
+  else if (a.locked) openGate(a);
+  else if (isHttpUrl(a.url)) {
+    const m = openModal({ title: a.name, body: h('a', { class: 'btn primary', href: a.url, target: '_blank', rel: 'noopener noreferrer', style: 'width:100%' }, 'Open ' + a.name, icon('external', 16)), footer: null });
+  }
+};
+
+/* ---------- admin: per-app code fields inside Add/Edit application ---------- */
+let gateExtra = null;
+const _adminCall = adminCall;
+adminCall = async function (action, payload) {
+  if (action === 'saveApp' && gateExtra) payload = Object.assign({}, payload, gateExtra());
+  return _adminCall(action, payload);
+};
+const _openAppForm = openAppForm;
+openAppForm = function (app) {
+  _openAppForm(app);
+  const form = document.getElementById('appForm');
+  if (!form) return;
+  const cur = (app && app.lock) || 'default';
+  const sel = h('select', { id: 'af-lock' }, [['default', 'Follow the portal-wide setting'], ['own', 'Use a different code for this app'], ['none', 'No code (anyone can open it)']].map(o => h('option', { value: o[0], selected: o[0] === cur, text: o[1] })));
+  const code = h('input', { type: 'text', id: 'af-code', inputmode: 'numeric', maxlength: '4', autocomplete: 'off', placeholder: (app && app.hasCode) ? 'Leave blank to keep the current code' : '4 digits' });
+  const codeRow = h('div', { class: 'field' }, h('label', { for: 'af-code', text: 'Security code for this app' }), code,
+    h('div', { class: 'hint', text: 'Exactly 4 digits. It is not shown again after saving; type a new one to change it.' }));
+  const sync = () => { codeRow.style.display = sel.value === 'own' ? '' : 'none'; };
+  sel.addEventListener('change', sync); sync();
+  code.addEventListener('input', () => { code.value = code.value.replace(/\D/g, '').slice(0, 4); });
+  form.insertBefore(h('div', null,
+    h('div', { class: 'field' }, h('label', { for: 'af-lock', text: 'Access code' }), sel,
+      h('div', { class: 'hint', text: 'Visitors must enter this 4-digit code on the public portal before the app opens.' })),
+    codeRow), form.lastElementChild);
+  gateExtra = () => ({ lock: sel.value, code: code.value.trim() });
+};
+
+/* ---------- admin: portal-wide code in Settings ---------- */
+const _pgSettings = pgSettings;
+pgSettings = async function () {
+  await _pgSettings();
+  const g = await adminCall('getGate');
+  const on = h('input', { type: 'checkbox', id: 'g-on' }); on.checked = !!g.on;
+  const code = h('input', { type: 'text', id: 'g-code', inputmode: 'numeric', maxlength: '4', autocomplete: 'off', placeholder: g.hasCode ? 'Leave blank to keep the current code' : '4 digits' });
+  code.addEventListener('input', () => { code.value = code.value.replace(/\D/g, '').slice(0, 4); });
+  const gen = h('button', { class: 'btn ghost sm', type: 'button', style: 'margin-top:6px' }, 'Generate a random code');
+  gen.addEventListener('click', () => { const r = new Uint32Array(1); crypto.getRandomValues(r); code.value = String(r[0] % 10000).padStart(4, '0'); });
+  const msg = h('div', { class: 'alert err', role: 'alert', style: 'display:none' });
+  const save = h('button', { class: 'btn primary', type: 'submit' }, 'Save security code');
+  const box = h('form', { class: 'box', novalidate: true }, h('h3', { text: 'Security code for opening applications' }), msg,
+    h('p', { style: 'color:var(--muted);font-size:13px;margin-top:0', text: 'When on, visitors must enter this 4-digit code before any application set to “Follow the portal-wide setting” opens. Each application can instead use its own code, or no code, from Edit application. Codes are stored hashed and cannot be shown again; set a new one if it is forgotten.' }),
+    h('label', { class: 'check', for: 'g-on' }, on, h('span', null, 'Require a security code for all applications')),
+    h('div', { class: 'field' }, h('label', { for: 'g-code', text: 'Portal-wide security code' }), code, gen), save);
+  box.addEventListener('submit', async ev => {
+    ev.preventDefault(); msg.style.display = 'none';
+    if (code.value && code.value.length !== 4) { msg.textContent = 'The code must be exactly 4 digits.'; msg.style.display = ''; return; }
+    try { await adminCall('saveGate', { on: on.checked, code: code.value }); toast('Security code settings saved.', 'ok'); state.pub = null; gotoAdmin('settings'); }
+    catch (e) { if (e.code !== 'SESSION') { msg.textContent = e.message; msg.style.display = ''; } }
+  });
+  ui.content.children[0].after(box);
+};
+
+
+/* =====================================================================
+   FORGOT PASSWORD (browser side)
+   Paste inside the <script> of Index.html, just ABOVE the BOOT comment block
+   and BELOW the "ACCESS CODE GATE (browser side)" block. Change nothing else.
+   ===================================================================== */
+
+LOG_LABELS.RESET_REQUESTED = ['Reset code emailed'];
+LOG_LABELS.RESET_FAIL = ['Failed reset', 'red'];
+LOG_LABELS.PASSWORD_RESET = ['Password reset (email)', 'red'];
+
+/* adds a "Forgot password?" link to the sign-in form */
+const _showLoginFp = showLogin;
+showLogin = function (message) {
+  const p = _showLoginFp(message);                  // the form is mounted before its first await
+  const form = document.querySelector('.auth-card form');
+  if (form && !form.querySelector('[data-fp]')) {
+    form.append(h('div', { 'data-fp': '1', style: 'margin-top:12px;font-size:14px' },
+      h('button', { class: 'linkbtn', type: 'button', onclick: () => showForgot('') }, 'Forgot password?')));
+  }
+  return p;
+};
+
+function showForgot(prefill) {
+  stopTimers(); state.view = 'forgot';
+  const err = h('div', { class: 'alert err', role: 'alert', style: 'display:none' });
+  const info = h('div', { class: 'alert info', role: 'status', style: 'display:none' });
+  const email = h('input', { type: 'email', id: 'fe', autocomplete: 'username', placeholder: 'Administrator email', value: prefill || '' });
+  const sendBtn = h('button', { class: 'btn primary', type: 'button', style: 'width:100%' }, 'Email me a reset code');
+  const code = h('input', { type: 'text', id: 'fc', autocomplete: 'off', placeholder: 'XXXXX-XXXXX', style: 'text-transform:uppercase;letter-spacing:2px' });
+  const p1 = h('input', { type: 'password', id: 'fp1', autocomplete: 'new-password' });
+  const p2 = h('input', { type: 'password', id: 'fp2', autocomplete: 'new-password' });
+  const resetBtn = h('button', { class: 'btn primary', type: 'submit', style: 'width:100%' }, 'Set new password');
+  const again = h('button', { class: 'linkbtn', type: 'button' }, 'Send a new code');
+  const haveCode = h('div', { style: 'margin-top:12px;font-size:14px' }, h('button', { class: 'linkbtn', type: 'button', onclick: () => showStep2(false) }, 'I already have a code'));
+
+  const step2 = h('div', { style: 'display:none' },
+    h('div', { class: 'field' }, h('label', { for: 'fc', text: 'Reset code from the email' }), code),
+    h('div', { class: 'field' }, h('label', { for: 'fp1', text: 'New password' }), p1, h('div', { class: 'hint', text: 'At least 8 characters.' })),
+    h('div', { class: 'field' }, h('label', { for: 'fp2', text: 'Confirm new password' }), p2),
+    resetBtn,
+    h('div', { style: 'margin-top:12px;font-size:14px' }, again, h('span', { style: 'color:var(--muted)', text: '  (a new code can be requested every 2 minutes)' })));
+  let step2Shown = false;
+  function showStep2(sent) {
+    step2Shown = true; step2.style.display = ''; sendBtn.style.display = 'none'; haveCode.style.display = 'none';
+    if (sent) { info.textContent = 'If that email matches the administrator account, a reset code has been sent. Check the inbox and spam folder. The code is valid for 15 minutes.'; info.style.display = ''; }
+    code.focus();
+  }
+  const fail = m => { err.textContent = m; err.style.display = ''; };
+
+  async function sendCode(btn) {
+    err.style.display = 'none';
+    if (!email.value.trim()) return fail('Enter the administrator email.');
+    btn.disabled = true;
+    try { await rpc('apiRequestReset', email.value); showStep2(true); }
+    catch (e) { fail(e.message); }
+    btn.disabled = false;
+  }
+  sendBtn.addEventListener('click', () => sendCode(sendBtn));
+  again.addEventListener('click', () => sendCode(again));
+
+  const form = h('form', { novalidate: true }, err, info,
+    h('div', { class: 'field' }, h('label', { for: 'fe', text: 'Administrator email' }), email),
+    sendBtn, haveCode, step2);
+  form.addEventListener('submit', async ev => {
+    ev.preventDefault(); err.style.display = 'none';
+    if (!step2Shown) return sendCode(sendBtn);
+    if (!email.value.trim() || !code.value.trim()) return fail('Enter the administrator email and the reset code.');
+    if (p1.value.length < 8) return fail('Password needs 8 or more characters.');
+    if (p1.value !== p2.value) return fail('The two passwords do not match.');
+    resetBtn.disabled = true; resetBtn.replaceChildren(h('span', { class: 'spin sm' }), 'Saving…');
+    try {
+      await rpc('apiResetPassword', email.value, code.value, p1.value);
+      p1.value = p2.value = code.value = '';
+      endSession(); toast('Password changed. Please sign in with your new password.', 'ok'); showLogin();
+    } catch (e) { fail(e.message); resetBtn.disabled = false; resetBtn.replaceChildren('Set new password'); }
+  });
+
+  mount(h('div', { class: 'auth-wrap' }, h('div', { class: 'auth-card' },
+    h('h1', { text: 'Reset administrator password' }),
+    h('p', { class: 'sub', text: 'A one-time code will be emailed to the administrator address.' }), form,
+    h('div', { style: 'margin-top:16px;font-size:14px' }, h('button', { class: 'linkbtn', type: 'button', onclick: () => showLogin() }, '← Back to sign in')))));
+  setTimeout(() => email.focus(), 30);
+}
+/* =====================================================================
+   PRIMARY + SECONDARY ADMINISTRATORS (browser side)
+   Paste inside the <script> of Index.html, just ABOVE the BOOT comment block
+   and BELOW the "FORGOT PASSWORD (browser side)" block. Change nothing else.
+   ===================================================================== */
+
+LOG_LABELS.ADMIN_ADDED = ['Admin added', 'grn'];
+LOG_LABELS.ADMIN_REMOVED = ['Admin removed', 'red'];
+LOG_LABELS.ADMIN_INVITE_SENT = ['Invitation sent'];
+LOG_LABELS.ADMIN_INVITE_FAIL = ['Failed invitation', 'red'];
+LOG_LABELS.ADMIN_JOINED = ['Admin joined', 'grn'];
+
+/* new menu item (shown to the primary administrator only) */
+ADMIN_PAGES.splice(4, 0, ['admins', 'Administrators', 'users']);
+
+/* remember whether this session is the primary or a secondary administrator */
+const _rpcRole = rpc;
+rpc = async function (fn, ...args) {
+  const r = await _rpcRole(fn, ...args);
+  if (r && r.role && (fn === 'apiLogin' || (fn === 'apiAdmin' && args[1] === 'ping'))) state.role = r.role;
+  return r;
+};
+
+/* hide the Administrators menu item from secondary administrators */
+const _showAdminRole = showAdmin;
+showAdmin = function () {
+  _showAdminRole();
+  if (state.role !== 'primary') {
+    const b = document.querySelector('.nav-btn[data-p="admins"]');
+    if (b) b.remove();
+  }
+};
+
+/* Settings: secondary administrators do not see the "Administrator account" box */
+const _pgSettingsRole = pgSettings;
+pgSettings = async function () {
+  await _pgSettingsRole();
+  if (state.role !== 'primary') {
+    document.querySelectorAll('.content .box h3').forEach(t => { if (t.textContent === 'Administrator account' && t.parentElement) t.parentElement.remove(); });
+  }
+};
+
+/* same as before, plus the new page */
+function gotoAdmin(page) {
+  state.page = page;
+  document.querySelectorAll('.nav-btn[data-p]').forEach(b => { if (b.dataset.p === page) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
+  ui.content.replaceChildren(spinnerBlock());
+  const fn = { dashboard: pgDashboard, apps: pgApps, categories: pgCats, settings: pgSettings, log: pgLog, admins: pgAdmins, users: pgUsers }[page];
+  ui.content.focus({ preventScroll: true });
+  return fn().catch(e => { if (e.code !== 'SESSION') ui.content.replaceChildren(h('div', { class: 'alert err', role: 'alert' }, e.message, ' ', h('button', { class: 'linkbtn', type: 'button', onclick: () => gotoAdmin(page) }, 'Retry'))); });
+}
+
+/* ---------- Administrators page ---------- */
+async function pgAdmins() { renderAdmins(await adminCall('listAdmins')); }
+
+function renderAdmins(d) {
+  const err = h('div', { class: 'alert err', role: 'alert', style: 'display:none' });
+  const email = h('input', { type: 'email', id: 'ad-email', placeholder: 'name@company.com', autocomplete: 'off', maxlength: '120' });
+  const add = h('button', { class: 'btn primary', type: 'submit' }, icon('plus', 16), 'Add and send invitation');
+  const form = h('form', { class: 'box', novalidate: true }, h('h3', { text: 'Add an administrator' }), err,
+    h('div', { class: 'field' }, h('label', { for: 'ad-email', text: 'Email address' }), email,
+      h('div', { class: 'hint', text: 'An invitation code is emailed to this address. The person opens Admin Login, chooses “Join here”, and creates their own password.' })),
+    add);
+  form.addEventListener('submit', async ev => {
+    ev.preventDefault(); err.style.display = 'none';
+    const v = email.value.trim();
+    if (!/^[^\s@<>"']+@[^\s@<>"']+\.[^\s@<>"']+$/.test(v)) { err.textContent = 'Enter a valid email address.'; err.style.display = ''; email.focus(); return; }
+    add.disabled = true;
+    try {
+      const r = await adminCall('addAdmin', { email: v });
+      toast(r.mailed ? 'Invitation emailed to ' + v + '.' : 'Added, but the email could not be sent. Use “Resend invitation” to try again.', r.mailed ? 'ok' : 'err');
+      renderAdmins(r);
+    } catch (e) { if (e.code !== 'SESSION') { err.textContent = e.message; err.style.display = ''; add.disabled = false; } }
+  });
+
+  const rows = d.admins.map(a => {
+    const resend = h('button', { class: 'btn ghost sm', type: 'button' }, icon('mail', 15), a.status === 'active' ? 'Reset password' : 'Resend invitation');
+    resend.addEventListener('click', async () => {
+      if (a.status === 'active' && !(await confirmDialog({ title: 'Reset password?', message: a.email + ' will be signed out and emailed a new code to choose a new password.', confirmText: 'Reset and email code' }))) return;
+      try {
+        const r = await adminCall('resendInvite', { email: a.email });
+        toast(r.mailed ? 'New invitation emailed to ' + a.email + '.' : 'The email could not be sent. Please try again.', r.mailed ? 'ok' : 'err');
+        renderAdmins(r);
+      } catch (e) { if (e.code !== 'SESSION') toast(e.message, 'err'); }
+    });
+    const remove = h('button', { class: 'btn danger sm', type: 'button' }, icon('trash', 15), 'Remove');
+    remove.addEventListener('click', async () => {
+      if (!(await confirmDialog({ title: 'Remove administrator?', message: a.email + ' will lose administrator access immediately and be signed out.', confirmText: 'Remove', danger: true }))) return;
+      try { const r = await adminCall('removeAdmin', { email: a.email }); toast('Administrator removed.', 'ok'); renderAdmins(r); }
+      catch (e) { if (e.code !== 'SESSION') toast(e.message, 'err'); }
+    });
+    const sub = a.status === 'active' ? 'Joined ' + fmtTime(a.joinedAt)
+      : (a.inviteExp > Date.now() ? 'Invitation valid until ' + fmtTime(a.inviteExp) : 'Invitation expired. Use “Resend invitation”.');
+    return h('div', { class: 'row' },
+      h('div', { class: 'tile', style: 'width:42px;height:42px' }, icon('users', 20)),
+      h('div', { class: 'grow' }, h('div', { class: 't' }, a.email, ' ', h('span', { class: 'pill ' + (a.status === 'active' ? 'on' : 'off'), text: a.status === 'active' ? 'Active' : 'Invited' })), h('div', { class: 's', text: sub })),
+      h('div', { class: 'acts' }, resend, remove));
+  });
+
+  ui.content.replaceChildren(
+    pageHead('Administrators', 'You are the primary administrator. Only you can add or remove administrators. ' + d.admins.length + ' of ' + d.max + ' secondary administrators used.'),
+    form,
+    h('div', { class: 'box' }, h('h3', { text: 'Who can sign in to the admin portal' }),
+      h('div', { class: 'row' },
+        h('div', { class: 'tile', style: 'width:42px;height:42px' }, icon('shield', 20)),
+        h('div', { class: 'grow' }, h('div', { class: 't' }, d.primary, ' ', h('span', { class: 'pill qr', text: 'Primary' })), h('div', { class: 's', text: 'Can do everything, including managing administrators.' }))),
+      rows.length ? rows : h('p', { style: 'margin:12px 0 0;color:var(--muted)', text: 'No secondary administrators yet.' })));
+}
+
+/* ---------- Join as an invited administrator ---------- */
+function showJoin() {
+  stopTimers(); state.view = 'join';
+  const err = h('div', { class: 'alert err', role: 'alert', style: 'display:none' });
+  const email = h('input', { type: 'email', id: 'je', autocomplete: 'username', placeholder: 'The email address you were invited on' });
+  const code = h('input', { type: 'text', id: 'jc', autocomplete: 'off', placeholder: 'XXXXX-XXXXX', style: 'text-transform:uppercase;letter-spacing:2px' });
+  const p1 = h('input', { type: 'password', id: 'jp1', autocomplete: 'new-password' });
+  const p2 = h('input', { type: 'password', id: 'jp2', autocomplete: 'new-password' });
+  const btn = h('button', { class: 'btn primary', type: 'submit', style: 'width:100%' }, 'Create my administrator account');
+  const form = h('form', { novalidate: true }, err,
+    h('div', { class: 'alert info' }, 'Enter the invitation code that was emailed to you. If it has expired, ask the primary administrator to send a new one.'),
+    h('div', { class: 'field' }, h('label', { for: 'je', text: 'Your email address' }), email),
+    h('div', { class: 'field' }, h('label', { for: 'jc', text: 'Invitation code' }), code),
+    h('div', { class: 'field' }, h('label', { for: 'jp1', text: 'Choose a password' }), p1, h('div', { class: 'hint', text: 'At least 8 characters.' })),
+    h('div', { class: 'field' }, h('label', { for: 'jp2', text: 'Confirm password' }), p2), btn);
+  form.addEventListener('submit', async ev => {
+    ev.preventDefault(); err.style.display = 'none';
+    const fail = m => { err.textContent = m; err.style.display = ''; };
+    if (!email.value.trim() || !code.value.trim()) return fail('Enter your email address and the invitation code.');
+    if (p1.value.length < 8) return fail('Password needs 8 or more characters.');
+    if (p1.value !== p2.value) return fail('The two passwords do not match.');
+    btn.disabled = true; btn.replaceChildren(h('span', { class: 'spin sm' }), 'Creating…');
+    try {
+      await rpc('apiAcceptInvite', email.value, code.value, p1.value);
+      p1.value = p2.value = code.value = '';
+      toast('Your administrator account is ready. Please sign in.', 'ok'); showLogin();
+    } catch (e) { fail(e.message); btn.disabled = false; btn.replaceChildren('Create my administrator account'); }
+  });
+  mount(h('div', { class: 'auth-wrap' }, h('div', { class: 'auth-card' },
+    h('h1', { text: 'Join as administrator' }),
+    h('p', { class: 'sub', text: 'Use the invitation you received by email.' }), form,
+    h('div', { style: 'margin-top:16px;font-size:14px' }, h('button', { class: 'linkbtn', type: 'button', onclick: () => showLogin() }, '← Back to sign in')))));
+  setTimeout(() => email.focus(), 30);
+}
+
+/* "Join here" link on the sign-in page */
+const _showLoginJoin = showLogin;
+showLogin = function (message) {
+  const p = _showLoginJoin(message);
+  const form = document.querySelector('.auth-card form');
+  if (form && !form.querySelector('[data-join]')) {
+    form.append(h('div', { 'data-join': '1', style: 'margin-top:12px;font-size:14px' }, 'Invited as an administrator? ',
+      h('button', { class: 'linkbtn', type: 'button', onclick: () => showJoin() }, 'Join here')));
+  }
+  return p;
+};
+
+/* "Forgot password?" only works for the primary: tell secondary administrators what to do */
+const _showForgotSec = showForgot;
+showForgot = function (prefill) {
+  _showForgotSec(prefill);
+  const form = document.querySelector('.auth-card form');
+  if (form) form.after(h('p', { style: 'color:var(--muted);font-size:13px;margin:12px 0 0', text: 'This works for the primary administrator only. Other administrators should ask the primary administrator to reset their password from the Administrators page.' }));
+};
+
+/* =====================================================================
+   APPLICATION FORM: REQUIRED-FIELD SETTINGS (browser side)
+   Paste inside the <script> of Index.html, just ABOVE the BOOT comment block
+   and BELOW the "PRIMARY + SECONDARY ADMINISTRATORS" block.
+   Also do the ONE Find and Replace described in the instructions.
+   ===================================================================== */
+
+LOG_LABELS.FORM_RULES_CHANGED = ['Form rules changed'];
+
+async function loadFormRules() {
+  try { state.formRules = await adminCall('getFormRules'); }
+  catch (e) { state.formRules = { desc: true, label: false, notes: false }; }
+  return state.formRules;
+}
+
+/* load the rules before the Add/Edit form opens, then fix the field captions */
+const _openAppFormRules = openAppForm;
+openAppForm = function (app) {
+  const go = () => {
+    _openAppFormRules(app);
+    const R = state.formRules || {};
+    const cap = (id, text) => { const l = document.querySelector('label[for="' + id + '"]'); if (l) l.textContent = text; };
+    cap('af-desc', R.desc === false ? 'Short description (optional)' : 'Short description *');
+    cap('af-label', R.label ? 'Display label *' : 'Display label (optional)');
+    cap('af-notes', R.notes ? 'Administrator notes * (never shown publicly)' : 'Administrator notes (optional, never shown publicly)');
+  };
+  if (state.formRules) go(); else loadFormRules().then(go, go);
+};
+
+/* Settings page: new box (primary administrator only) */
+const _pgSettingsRules = pgSettings;
+pgSettings = async function () {
+  await _pgSettingsRules();
+  if (state.role !== 'primary') return;
+  const R = await loadFormRules();
+  const err = h('div', { class: 'alert err', role: 'alert', style: 'display:none' });
+  const fixed = (title, note) => {
+    const c = h('input', { type: 'checkbox', checked: true, disabled: true });
+    return h('label', { class: 'check' }, c, h('span', null, title, h('small', { text: note })));
+  };
+  const mk = (id, title, note, on) => {
+    const c = h('input', { type: 'checkbox', id: id }); c.checked = !!on;
+    return { c, el: h('label', { class: 'check', for: id }, c, h('span', null, title, h('small', { text: note }))) };
+  };
+  const d = mk('fr-desc', 'Short description', 'Visitors see it on the application card.', R.desc);
+  const l = mk('fr-label', 'Display label', 'The small badge on the card.', R.label);
+  const n = mk('fr-notes', 'Administrator notes', 'Private notes, never shown publicly.', R.notes);
+  const btn = h('button', { class: 'btn primary', type: 'button' }, 'Save form rules');
+  btn.addEventListener('click', async () => {
+    err.style.display = 'none'; btn.disabled = true;
+    try {
+      state.formRules = await adminCall('saveFormRules', { desc: d.c.checked, label: l.c.checked, notes: n.c.checked });
+      toast('Form rules saved.', 'ok');
+    } catch (e) { if (e.code !== 'SESSION') { err.textContent = e.message; err.style.display = ''; } }
+    btn.disabled = false;
+  });
+  ui.content.append(h('div', { class: 'box' }, h('h3', { text: 'Application form: required fields' }),
+    h('p', { style: 'color:var(--muted);font-size:13px;margin-top:0', text: 'Tick a field to make it required when adding or editing an application. Untick it to make it optional. Only you (the primary administrator) can change this.' }),
+    err,
+    fixed('Application name', 'Always required'), fixed('Application URL', 'Always required'), fixed('Category', 'Always required'),
+    d.el, l.el, n.el, h('div', { style: 'margin-top:12px' }, btn)));
+};
+
+
+/* =====================================================================
+   USER ACCESS (browser side)
+   ===================================================================== */
+LOG_LABELS.USER_ADDED = ['User added', 'grn'];
+LOG_LABELS.USER_UPDATED = ['User updated'];
+LOG_LABELS.USER_ACTIVATED = ['User activated'];
+LOG_LABELS.USER_DEACTIVATED = ['User deactivated', 'red'];
+LOG_LABELS.USER_DELETED = ['User deleted', 'red'];
+ADMIN_PAGES.splice(2, 0, ['users', 'Users', 'users']);
+
+/* ---------- visitor session (token only; the server decides everything) ---------- */
+const USER_KEY = 'kb.user';
+function loadUserToken() { try { return localStorage.getItem(USER_KEY) || sessionStorage.getItem(USER_KEY); } catch (e) { return null; } }
+function clearUserToken() { try { localStorage.removeItem(USER_KEY); sessionStorage.removeItem(USER_KEY); } catch (e) { /* ignore */ } state.utoken = null; state.user = null; }
+function saveUserToken(t, remember) {
+  clearUserToken();
+  try { (remember ? localStorage : sessionStorage).setItem(USER_KEY, t); }
+  catch (e) { try { sessionStorage.setItem(USER_KEY, t); } catch (x) { /* memory only */ } }
+  state.utoken = t;
+}
+state.utoken = loadUserToken();
+state.user = null;
+
+function drawUserBtn() {
+  const old = document.getElementById('userBtn'); if (old) old.remove();
+  const bar = document.querySelector('.pp-top-r');
+  if (!bar || !state.user) return;
+  const b = h('button', { id: 'userBtn', class: 'pp-icbtn', type: 'button', title: 'Signed in as ' + state.user.email, style: 'display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600' }, icon('logout', 18), 'Sign out');
+  b.addEventListener('click', async () => {
+    try { await rpc('apiUserSignOut', state.utoken); } catch (e) { /* ignore */ }
+    clearUserToken(); drawUserBtn(); toast('You have been signed out.', 'ok');
+  });
+  bar.insertBefore(b, bar.querySelector('.pp-admin'));
+}
+const _renderPublicU = renderPublic;
+renderPublic = function () { _renderPublicU(); drawUserBtn(); };
+
+async function restoreUser() {
+  if (!state.utoken) return;
+  try { state.user = await rpc('apiUserSession', state.utoken); }
+  catch (e) { if (e.code === 'SIGNIN') clearUserToken(); }
+  drawUserBtn();
+}
+let userRestored = false;
+const _loadPublicU = loadPublic;
+loadPublic = async function (manual) {
+  await _loadPublicU(manual);
+  if (!userRestored) { userRestored = true; restoreUser(); }
+};
+
+function launchApp(a, url) {
+  if (!isHttpUrl(url)) { toast('The saved link for this application is not valid.', 'err'); return; }
+  let w = null;
+  try { w = window.open(url, '_blank'); if (w) w.opener = null; } catch (e) { /* popup blocked */ }
+  if (w) { toast('Opening ' + a.name + '…', 'ok'); return; }
+  openModal({ title: a.name, body: h('div', null, h('div', { class: 'alert ok', text: 'You are authorized.' }),
+    h('a', { class: 'btn primary', href: url, target: '_blank', rel: 'noopener noreferrer', style: 'width:100%' }, 'Open ' + a.name, icon('external', 16))), footer: null });
+}
+
+async function openRestricted(a) {
+  if (state.utoken) {
+    try { const d = await rpc('apiOpenApp', state.utoken, a.id); launchApp(a, d.url); return; }
+    catch (e) {
+      if (e.code === 'SIGNIN') { clearUserToken(); drawUserBtn(); }
+      else { toast(e.message, 'err'); return; }
+    }
+  }
+  openSignIn(a);
+}
+
+function openSignIn(a) {
+  let step = 1;
+  const err = h('div', { class: 'alert err', role: 'alert', style: 'display:none' });
+  const info = h('div', { class: 'alert info', role: 'status', style: 'display:none' });
+  const email = h('input', { type: 'email', id: 'us-e', autocomplete: 'username', maxlength: '120', placeholder: 'name@company.com' });
+  const code = h('input', { type: 'text', id: 'us-c', inputmode: 'numeric', autocomplete: 'one-time-code', maxlength: '6', style: 'letter-spacing:6px;text-align:center;font-size:20px' });
+  const keep = h('input', { type: 'checkbox', id: 'us-k' });
+  const go = h('button', { class: 'btn primary', type: 'submit', form: 'usForm' }, 'Email me a code');
+  const cancel = h('button', { class: 'btn ghost', type: 'button', text: 'Cancel' });
+  const again = h('button', { class: 'linkbtn', type: 'button', text: 'Use a different email / send a new code' });
+  const codeRow = h('div', { style: 'display:none' },
+    h('div', { class: 'field' }, h('label', { for: 'us-c', text: 'Code from the email' }), code),
+    h('label', { class: 'check', for: 'us-k' }, keep, h('span', null, 'Keep me signed in', h('small', { text: 'Stays signed in on this device for 30 days. Do not use on a shared computer.' }))),
+    h('div', { style: 'font-size:13px' }, again));
+  const form = h('form', { id: 'usForm', novalidate: true }, err, info,
+    h('p', { style: 'margin:0 0 14px', text: a.name + ' is restricted. Enter your registered email address and we will email you a one-time sign-in code.' }),
+    h('div', { class: 'field' }, h('label', { for: 'us-e', text: 'Email address' }), email), codeRow);
+  const m = openModal({ title: 'Sign in to continue', body: form, footer: [cancel, go], sticky: true, focus: '#us-e' });
+  cancel.addEventListener('click', m.close);
+  code.addEventListener('input', () => { code.value = code.value.replace(/\D/g, '').slice(0, 6); });
+  again.addEventListener('click', () => { step = 1; email.readOnly = false; codeRow.style.display = 'none'; info.style.display = 'none'; go.replaceChildren('Email me a code'); email.focus(); });
+  const fail = msg => { err.textContent = msg; err.style.display = ''; info.style.display = 'none'; };
+  form.addEventListener('submit', async ev => {
+    ev.preventDefault(); err.style.display = 'none';
+    const em = email.value.trim();
+    if (!/^[^\s@<>"']+@[^\s@<>"']+\.[^\s@<>"']+$/.test(em)) return fail('Enter a valid email address.');
+    go.disabled = true;
+    if (step === 1) {
+      try {
+        await rpc('apiUserRequestCode', em, a.id);
+        step = 2; email.readOnly = true; codeRow.style.display = '';
+        info.textContent = 'A 6-digit code has been sent to your email. It is valid for 10 minutes.'; info.style.display = '';
+        go.replaceChildren('Sign in'); code.focus();
+      } catch (e) {
+        if (e.code === 'NOT_REGISTERED') { m.close(); notRegisteredDialog(e.message); return; }
+        fail(e.message);
+      }
+      go.disabled = false; return;
+    }
+    if (code.value.length !== 6) { go.disabled = false; return fail('Enter the 6-digit code.'); }
+    try {
+      const d = await rpc('apiUserSignIn', em, code.value, keep.checked);
+      saveUserToken(d.token, keep.checked); state.user = { name: d.name, email: d.email }; drawUserBtn(); m.close();
+      openRestricted(a);
+    } catch (e) { fail(e.message); code.value = ''; go.disabled = false; }
+  });
+}
+
+
+function notRegisteredDialog(message) {
+  const ok = h('button', { class: 'btn primary', type: 'button', text: 'OK' });
+  const m = openModal({ title: 'Not registered', body: h('div', { class: 'alert err', role: 'alert', text: message || 'You are not registered for this application. Please contact the administrator.' }), footer: [ok], focus: 'button.primary' });
+  ok.addEventListener('click', m.close);
+}
+
+/* restricted apps: "Open App" never links straight to the app */
+const _appCardU = appCard;
+appCard = function (a) {
+  const el = _appCardU(a);
+  if (a.restricted) {
+    const old = el.querySelector('.card-actions .btn.primary');
+    const b = h('button', { class: 'btn primary', type: 'button', 'aria-label': 'Open ' + a.name + ' (sign-in required)', onclick: () => openRestricted(a) }, icon('lock', 16), 'Open App');
+    if (old) old.replaceWith(b);
+  }
+  return el;
+};
+
+/* ---------- admin: Users page ---------- */
+async function pgUsers() { renderUsers(await adminCall('listUsers')); }
+
+function renderUsers(d) {
+  state.users = d.users;
+  const rows = d.users.length ? d.users.map(u => h('div', { class: 'row' },
+    h('div', { class: 'tile', style: 'width:42px;height:42px' }, icon('users', 20)),
+    h('div', { class: 'grow' }, h('div', { class: 't' }, u.name, ' ', h('span', { class: 'pill ' + (u.active ? 'on' : 'off'), text: u.active ? 'Active' : 'Inactive' })), h('div', { class: 's', text: u.email })),
+    h('div', { class: 'acts' },
+      h('button', { class: 'btn ghost sm', type: 'button', onclick: () => openUserForm(u) }, icon('edit', 15), 'Edit'),
+      h('button', { class: 'btn ghost sm', type: 'button', onclick: () => toggleUser(u) }, u.active ? 'Deactivate' : 'Activate'),
+      h('button', { class: 'btn danger sm', type: 'button', onclick: () => deleteUser(u) }, icon('trash', 15), 'Delete'))))
+    : h('p', { style: 'margin:0;color:var(--muted)', text: 'No users yet. Add the people who may open restricted applications.' });
+  ui.content.replaceChildren(
+    pageHead('Users', d.users.length + ' of ' + d.max + ' used. Users sign in with a code emailed to them. Set who may open each application under Applications > Edit > Authorize Access.',
+      h('button', { class: 'btn primary', type: 'button', onclick: () => openUserForm(null) }, icon('plus', 16), 'Add user')),
+    h('div', { class: 'box' }, rows));
+}
+
+function openUserForm(u) {
+  const isNew = !u;
+  const name = fieldWrap('Name *', 'uf-name', h('input', { type: 'text', id: 'uf-name', maxlength: '60', value: u ? u.name : '' }));
+  const email = fieldWrap('Email address *', 'uf-email', h('input', { type: 'email', id: 'uf-email', maxlength: '120', autocomplete: 'off', value: u ? u.email : '' }), 'The sign-in code is emailed here. Changing it signs the user out everywhere.');
+  const active = h('input', { type: 'checkbox', id: 'uf-active' }); active.checked = u ? u.active : true;
+  const err = h('div', { class: 'alert err', role: 'alert', style: 'display:none' });
+  const form = h('form', { id: 'userForm', novalidate: true }, err, name.el, email.el,
+    h('label', { class: 'check', for: 'uf-active' }, active, h('span', null, 'Active', h('small', { text: 'Inactive users cannot sign in and lose access immediately.' }))));
+  const save = h('button', { class: 'btn primary', type: 'submit', form: 'userForm' }, isNew ? 'Add user' : 'Save changes');
+  const cancel = h('button', { class: 'btn ghost', type: 'button', text: 'Cancel' });
+  const m = openModal({ title: isNew ? 'Add user' : 'Edit user', body: form, footer: [cancel, save], sticky: true, focus: '#uf-name' });
+  cancel.addEventListener('click', m.close);
+  form.addEventListener('submit', async ev => {
+    ev.preventDefault(); err.style.display = 'none';
+    const n = name.input.value.trim(), em = email.input.value.trim();
+    if (n.length < 2) { err.textContent = 'Enter a name of 2-60 characters.'; err.style.display = ''; return; }
+    if (!/^[^\s@<>"']+@[^\s@<>"']+\.[^\s@<>"']+$/.test(em)) { err.textContent = 'Enter a valid email address.'; err.style.display = ''; return; }
+    save.disabled = true;
+    try { renderUsers(await adminCall('saveUser', { id: u ? u.id : undefined, name: n, email: em, active: active.checked })); m.close(); toast(isNew ? 'User added.' : 'User saved.', 'ok'); }
+    catch (e) { if (e.code === 'SESSION') { m.close(); return; } err.textContent = e.message; err.style.display = ''; save.disabled = false; }
+  });
+}
+async function toggleUser(u) {
+  try { renderUsers(await adminCall('toggleUser', { id: u.id, active: !u.active })); toast(u.name + (u.active ? ' deactivated. Access is revoked now.' : ' activated.'), 'ok'); }
+  catch (e) { toast(e.message, 'err'); }
+}
+async function deleteUser(u) {
+  if (!(await confirmDialog({ title: 'Delete user?', message: u.name + ' (' + u.email + ') will be deleted, signed out everywhere and removed from every application. This cannot be undone.', confirmText: 'Delete permanently', danger: true }))) return;
+  try { renderUsers(await adminCall('deleteUser', { id: u.id })); toast('User deleted.', 'ok'); }
+  catch (e) { toast(e.message, 'err'); }
+}
+
+/* ---------- admin: "Authorize Access" inside Add/Edit application ---------- */
+let accExtra = null;
+const _adminCallAcc = adminCall;
+adminCall = async function (action, payload) {
+  if (action === 'saveApp' && accExtra) payload = Object.assign({}, payload, accExtra());
+  return _adminCallAcc(action, payload);
+};
+function whenAppForm_(fn, tries) {
+  const f = document.getElementById('appForm');
+  if (f) return fn(f);
+  if ((tries || 0) < 30) setTimeout(function () { whenAppForm_(fn, (tries || 0) + 1); }, 100);
+}
+function drawAccess_(box, app, users) {
+  const chosen = {}; ((app && app.au) || []).forEach(id => { chosen[id] = true; });
+  const open = h('input', { type: 'checkbox', id: 'af-open' }); open.checked = !(app && app.acc === 'users');
+  const rows = users.map(u => {
+    const c = h('input', { type: 'checkbox', id: 'af-u-' + u.id }); c.checked = !!chosen[u.id];
+    return { u: u, c: c, el: h('label', { class: 'check', for: 'af-u-' + u.id, style: 'margin-bottom:6px' }, c, h('span', null, u.name, h('small', { text: u.email + (u.active ? '' : ' (inactive)') }))) };
+  });
+  const list = h('div', { style: 'max-height:200px;overflow:auto;border:1px solid var(--line);border-radius:6px;padding:10px 10px 4px' },
+    rows.length ? rows.map(r => r.el) : h('p', { style: 'margin:0 0 6px;color:var(--muted)', text: 'No users yet. Add them in the Users section first.' }));
+  const sync = () => { rows.forEach(r => { r.c.disabled = open.checked; }); list.style.opacity = open.checked ? '.5' : ''; };
+  open.addEventListener('change', sync); sync();
+  box.replaceChildren(
+    h('label', { text: 'Authorize Access' }),
+    h('label', { class: 'check', for: 'af-open' }, open, h('span', null, 'Anyone (Open to All)', h('small', { text: 'No sign-in needed. Untick to restrict this application to the selected users.' }))),
+    list,
+    app ? h('div', { class: 'hint', text: 'Application ID (used by the application’s own access check): ' + app.id }) : null);
+  accExtra = () => ({ acc: open.checked ? 'open' : 'users', au: open.checked ? [] : rows.filter(r => r.c.checked).map(r => r.u.id) });
+}
+const _openAppFormAcc = openAppForm;
+openAppForm = function (app) {
+  accExtra = null;                                   // until the list loads, the server keeps the current setting
+  _openAppFormAcc(app);
+  whenAppForm_(function (form) {
+    const box = h('div', { class: 'field' }, h('label', { text: 'Authorize Access' }), h('div', { class: 'hint', text: 'Loading users…' }));
+    form.insertBefore(box, form.lastElementChild);
+    adminCall('listUsers').then(d => drawAccess_(box, app, d.users),
+      e => box.replaceChildren(h('label', { text: 'Authorize Access' }), h('div', { class: 'alert err', text: 'Could not load users: ' + e.message })));
+  });
+};
+
+
+/* =====================================================================
+   GOOGLE SHEET OPTION (browser side)
+   ===================================================================== */
+LOG_LABELS.SHEET_ACCESS_CHANGED = ['Sheet access changed'];
+state.sheets = {};
+let sheetsFor = null;
+
+async function loadSheets() {
+  if (!state.utoken && !state.token) {
+    state.sheets = {};
+  } else {
+    try {
+      const d = await rpc('apiGetSheets', state.utoken || '', state.token || '');
+      const m = {}; d.sheets.forEach(s => { m[s.id] = s.url; });
+      state.sheets = m;
+    } catch (e) { state.sheets = {}; }
+  }
+  if (state.view === 'public' && state.pub) updatePublicList();
+}
+
+const _loadPublicSheet = loadPublic;
+loadPublic = async function (manual) { await _loadPublicSheet(manual); loadSheets(); };
+
+/* "Sheet" button on a card, only when the server returned a link for this visitor */
+const _appCardSheet = appCard;
+appCard = function (a) {
+  const el = _appCardSheet(a);
+  const u = state.sheets && state.sheets[a.id];
+  if (u && isHttpUrl(u)) {
+    const box = el.querySelector('.card-actions');
+    if (box) box.append(h('a', { class: 'btn pp-soft', href: u, target: '_blank', rel: 'noopener noreferrer', 'aria-label': 'Open Google Sheet for ' + a.name }, icon('file', 16), 'Sheet'));
+  }
+  return el;
+};
+
+/* header: "Sign in" (visitors) / "Sign out" (signed-in users); hidden for administrators */
+function drawUserBtn() {
+  const old = document.getElementById('userBtn'); if (old) old.remove();
+  const key = state.user ? state.user.email : '';
+  if (key !== sheetsFor) { sheetsFor = key; loadSheets(); }
+  const bar = document.querySelector('.pp-top-r');
+  if (!bar) return;
+  const before = bar.querySelector('.pp-admin');
+  const st = 'display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600';
+  if (state.user) {
+    const b = h('button', { id: 'userBtn', class: 'pp-icbtn', type: 'button', title: 'Signed in as ' + state.user.email, style: st }, icon('logout', 18), 'Sign out');
+    b.addEventListener('click', async () => {
+      try { await rpc('apiUserSignOut', state.utoken); } catch (e) { /* ignore */ }
+      clearUserToken(); drawUserBtn(); toast('You have been signed out.', 'ok');
+    });
+    bar.insertBefore(b, before);
+  } else if (!state.token) {
+    const b = h('button', { id: 'userBtn', class: 'pp-icbtn', type: 'button', style: st, onclick: () => openSheetSignIn() }, icon('mail', 18), 'Sign in');
+    bar.insertBefore(b, before);
+  }
+}
+
+function openSheetSignIn() {
+  let step = 1;
+  const err = h('div', { class: 'alert err', role: 'alert', style: 'display:none' });
+  const info = h('div', { class: 'alert info', role: 'status', style: 'display:none' });
+  const email = h('input', { type: 'email', id: 'ss-e', autocomplete: 'username', maxlength: '120', placeholder: 'name@company.com' });
+  const code = h('input', { type: 'text', id: 'ss-c', inputmode: 'numeric', autocomplete: 'one-time-code', maxlength: '6', style: 'letter-spacing:6px;text-align:center;font-size:20px' });
+  const keep = h('input', { type: 'checkbox', id: 'ss-k' });
+  const go = h('button', { class: 'btn primary', type: 'submit', form: 'ssForm' }, 'Email me a code');
+  const cancel = h('button', { class: 'btn ghost', type: 'button', text: 'Cancel' });
+  const codeRow = h('div', { style: 'display:none' },
+    h('div', { class: 'field' }, h('label', { for: 'ss-c', text: 'Code from the email' }), code),
+    h('label', { class: 'check', for: 'ss-k' }, keep, h('span', null, 'Keep me signed in', h('small', { text: 'Stays signed in on this device for 30 days. Do not use on a shared computer.' }))));
+  const form = h('form', { id: 'ssForm', novalidate: true }, err, info,
+    h('p', { style: 'margin:0 0 14px', text: 'Enter your authorized email address and we will email you a one-time sign-in code.' }),
+    h('div', { class: 'field' }, h('label', { for: 'ss-e', text: 'Email address' }), email), codeRow);
+  const m = openModal({ title: 'Sign in', body: form, footer: [cancel, go], sticky: true, focus: '#ss-e' });
+  cancel.addEventListener('click', m.close);
+  code.addEventListener('input', () => { code.value = code.value.replace(/\D/g, '').slice(0, 6); });
+  const fail = msg => { err.textContent = msg; err.style.display = ''; info.style.display = 'none'; };
+  form.addEventListener('submit', async ev => {
+    ev.preventDefault(); err.style.display = 'none';
+    const em = email.value.trim();
+    if (!/^[^\s@<>"']+@[^\s@<>"']+\.[^\s@<>"']+$/.test(em)) return fail('Enter a valid email address.');
+    go.disabled = true;
+    if (step === 1) {
+      try {
+        await rpc('apiSheetRequestCode', em);
+        step = 2; email.readOnly = true; codeRow.style.display = '';
+        info.textContent = 'A 6-digit code has been sent to your email. It is valid for 10 minutes.'; info.style.display = '';
+        go.replaceChildren('Sign in'); code.focus();
+      } catch (e) { fail(e.message); }
+      go.disabled = false; return;
+    }
+    if (code.value.length !== 6) { go.disabled = false; return fail('Enter the 6-digit code.'); }
+    try {
+      const d = await rpc('apiUserSignIn', em, code.value, keep.checked);
+      saveUserToken(d.token, keep.checked); state.user = { name: d.name, email: d.email }; drawUserBtn(); m.close();
+      toast('Signed in.', 'ok');
+    } catch (e) { fail(e.message); code.value = ''; go.disabled = false; }
+  });
+}
+
+/* ---------- admin: "Google Sheet URL" field in Add/Edit application ---------- */
+let sheetExtra = null;
+const _adminCallSheet = adminCall;
+adminCall = async function (action, payload) {
+  if (action === 'saveApp' && sheetExtra) payload = Object.assign({}, payload, sheetExtra());
+  return _adminCallSheet(action, payload);
+};
+const _openAppFormSheet = openAppForm;
+openAppForm = function (app) {
+  sheetExtra = null;
+  _openAppFormSheet(app);
+  whenAppForm_(function (form) {
+    const inp = h('input', { type: 'url', id: 'af-sheet', maxlength: '1000', placeholder: 'https://docs.google.com/spreadsheets/d/…', value: (app && app.sheet) || '' });
+    form.insertBefore(h('div', { class: 'field' },
+      h('label', { for: 'af-sheet', text: 'Google Sheet URL (optional)' }), inp,
+      h('div', { class: 'hint', text: 'Leave blank for no sheet. Only administrators and the emails listed under Settings > Google Sheet access will see the “Sheet” button.' })), form.lastElementChild);
+    sheetExtra = () => ({ sheet: inp.value.trim() });
+  });
+};
+
+/* ---------- admin: Settings box with the allowed emails (primary administrator only) ---------- */
+const _pgSettingsSheet = pgSettings;
+pgSettings = async function () {
+  await _pgSettingsSheet();
+  if (state.role !== 'primary') return;
+  let d;
+  try { d = await adminCall('getSheetAccess'); } catch (e) { return; }
+  const ta = h('textarea', { id: 'sa-emails', maxlength: '6000', placeholder: 'abc@gmail.com,xyz@gmail.com' }, (d.emails || []).join(', '));
+  const msg = h('div', { class: 'alert err', role: 'alert', style: 'display:none' });
+  const btn = h('button', { class: 'btn primary', type: 'button' }, 'Save sheet access');
+  btn.addEventListener('click', async () => {
+    msg.style.display = 'none'; btn.disabled = true;
+    try {
+      const r = await adminCall('saveSheetAccess', { emails: ta.value });
+      ta.value = r.emails.join(', ');
+      toast('Sheet access saved (' + r.emails.length + ' email' + (r.emails.length === 1 ? '' : 's') + ').', 'ok');
+    } catch (e) { if (e.code !== 'SESSION') { msg.textContent = e.message; msg.style.display = ''; } }
+    btn.disabled = false;
+  });
+  ui.content.append(h('div', { class: 'box' }, h('h3', { text: 'Google Sheet access' }),
+    h('p', { style: 'color:var(--muted);font-size:13px;margin-top:0', text: 'Only these emails (and administrators) see the “Sheet” button on the public portal. Separate emails with commas. Each email must also be added under Users and be active, because it signs in with an emailed code.' }),
+    msg, h('div', { class: 'field' }, h('label', { for: 'sa-emails', text: 'Allowed emails' }), ta), btn));
+};
+
+
+/* ====================================================================
+   BOOT
+   ==================================================================== */
+(async function boot() {
+  const t = loadToken();
+  if (BOOT_VIEW === 'admin') {
+    if (t) {
+      state.token = t;
+      try { const r = await rpc('apiAdmin', t, 'ping', {}); state.email = r.email; showAdmin(); return; }
+      catch (e) { endSession(); }
+    }
+    showLogin(); return;
+  }
+  renderPublic();
+})();
+</script>
+</body>
+</html>
