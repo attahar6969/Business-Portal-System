@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<title>Kisan Enterprises Central Business Portal</title>
+<title>Attahar Business Portal</title>
 <style>
 :root{
   --navy-950:#0a1424;--navy-900:#0f1d33;--navy-800:#162a47;--navy-700:#1f3a5f;
@@ -696,7 +696,7 @@ function fmtKB(b) { return (b / 1024).toFixed(b < 10240 ? 1 : 0) + ' KB'; }
    ==================================================================== */
 const state = { pub: null, pubErr: null, loading: false, query: '', cat: 'all', token: null, email: '', page: 'dashboard', timer: null, apps: [], cats: [], meta: {} };
 const ui = {};
-const DEFAULT_SETTINGS = { portalName: 'Kisan Enterprises Central Business Portal', tagline: 'One secure place for every Kisan business application', description: '', monogram: 'KE', accent: 'navy', cardLayout: 'grid', defaultCategory: 'all', refreshMinutes: 0, footerText: 'Kisan Enterprises. All rights reserved.', qr: { size: 300, caption: true } };
+const DEFAULT_SETTINGS = { portalName: 'Attahar Business Portal', tagline: 'One secure place for every Attahar business application', description: '', monogram: 'AB', accent: 'navy', cardLayout: 'grid', defaultCategory: 'all', refreshMinutes: 0, footerText: 'Attahar. All rights reserved.', qr: { size: 300, caption: true } };
 function S() { return state.pub ? state.pub.settings : DEFAULT_SETTINGS; }
 
 function rpc(fn, ...args) {
@@ -771,9 +771,15 @@ function spinnerBlock(text) { return h('div', { class: 'panel', role: 'status' }
 /* ====================================================================
    PUBLIC PORTAL
    ==================================================================== */
+function brandParts() {
+  const n = S().portalName || '';
+  const m = n.match(/^(.*?)\s+(Business Portal)$/i);
+  return m ? [m[1], m[2]] : [n, S().tagline || ''];
+}
 function brand(light) {
-  return h('div', { class: 'brand' }, h('div', { class: 'mono', 'aria-hidden': 'true', text: S().monogram || 'KE' }),
-    h('div', { style: 'min-width:0' }, h('div', { class: 'brand-name', text: S().portalName }), light ? null : h('div', { class: 'brand-sub', text: S().tagline || '' })));
+  const p = brandParts();
+  return h('div', { class: 'brand' }, h('div', { class: 'mono', 'aria-hidden': 'true', text: S().monogram || 'AB' }),
+    h('div', { style: 'min-width:0' }, h('div', { class: 'brand-name', text: p[0] }), light ? null : h('div', { class: 'brand-sub', text: p[1] })));
 }
 
 function renderPublic() {
@@ -816,8 +822,9 @@ async function loadPublic(manual) {
     applyBranding();
     if (state.view === 'public') {
       setupAutoRefresh();
-      const brandEl = $('.brand-name'); if (brandEl) brandEl.textContent = S().portalName;
-      const sub = $('.brand-sub'); if (sub) sub.textContent = S().tagline || '';
+     const bp = brandParts();
+const brandEl = $('.brand-name'); if (brandEl) brandEl.textContent = bp[0];
+const sub = $('.brand-sub'); if (sub) sub.textContent = bp[1];
       const mono = $('.mono'); if (mono) mono.textContent = S().monogram;
       const hp = $('.hero p'); if (hp) hp.textContent = S().description || '';
       updatePublicList();
@@ -2287,6 +2294,143 @@ pgSettings = async function () {
     msg, h('div', { class: 'field' }, h('label', { for: 'sa-emails', text: 'Allowed emails' }), ta), btn));
 };
 
+
+/* =====================================================================
+   CO-PRIMARY ADMINISTRATORS (browser side)
+   ===================================================================== */
+LOG_LABELS.ADMIN_PROMOTED = ['Made primary', 'grn'];
+LOG_LABELS.ADMIN_DEMOTED = ['Primary rights removed', 'red'];
+state.owner = false;
+
+/* remember whether this session is the owner */
+const _rpcOwner = rpc;
+rpc = async function (fn, ...args) {
+  const r = await _rpcOwner(fn, ...args);
+  if (r && r.role && (fn === 'apiLogin' || (fn === 'apiAdmin' && args[1] === 'ping'))) state.owner = r.owner === true;
+  return r;
+};
+
+/* Settings: a co-primary does not see the owner's "Administrator account" box */
+const _pgSettingsOwner = pgSettings;
+pgSettings = async function () {
+  await _pgSettingsOwner();
+  if (state.role === 'primary' && !state.owner) {
+    document.querySelectorAll('.content .box h3').forEach(t => { if (t.textContent === 'Administrator account' && t.parentElement) t.parentElement.remove(); });
+  }
+};
+
+/* Administrators page, now with Make primary / Remove primary rights */
+function renderAdmins(d) {
+  const err = h('div', { class: 'alert err', role: 'alert', style: 'display:none' });
+  const email = h('input', { type: 'email', id: 'ad-email', placeholder: 'name@company.com', autocomplete: 'off', maxlength: '120' });
+  const add = h('button', { class: 'btn primary', type: 'submit' }, icon('plus', 16), 'Add and send invitation');
+  const form = h('form', { class: 'box', novalidate: true }, h('h3', { text: 'Add an administrator' }), err,
+    h('div', { class: 'field' }, h('label', { for: 'ad-email', text: 'Email address' }), email,
+      h('div', { class: 'hint', text: 'An invitation code is emailed to this address. The person opens Admin Login, chooses “Join here”, and creates their own password.' })),
+    add);
+  form.addEventListener('submit', async ev => {
+    ev.preventDefault(); err.style.display = 'none';
+    const v = email.value.trim();
+    if (!/^[^\s@<>"']+@[^\s@<>"']+\.[^\s@<>"']+$/.test(v)) { err.textContent = 'Enter a valid email address.'; err.style.display = ''; email.focus(); return; }
+    add.disabled = true;
+    try {
+      const r = await adminCall('addAdmin', { email: v });
+      toast(r.mailed ? 'Invitation emailed to ' + v + '.' : 'Added, but the email could not be sent. Use “Resend invitation” to try again.', r.mailed ? 'ok' : 'err');
+      renderAdmins(r);
+    } catch (e) { if (e.code !== 'SESSION') { err.textContent = e.message; err.style.display = ''; add.disabled = false; } }
+  });
+
+  const rows = d.admins.map(a => {
+    const locked = a.primary && !d.owner;            // only the owner may touch a co-primary
+    const acts = [];
+    if (d.owner && a.status === 'active') {
+      const tg = h('button', { class: 'btn ghost sm', type: 'button' }, icon('shield', 15), a.primary ? 'Remove primary rights' : 'Make primary');
+      tg.addEventListener('click', async () => {
+        const make = !a.primary;
+        if (!(await confirmDialog({
+          title: make ? 'Make primary administrator?' : 'Remove primary rights?',
+          message: make ? a.email + ' will be able to do everything you can, including adding and removing administrators, form rules and Google Sheet access. Only you can remove their primary rights, and only you can change the portal sign-in email and your own password.'
+                        : a.email + ' will become a secondary administrator again.',
+          confirmText: make ? 'Make primary' : 'Remove primary rights', danger: !make }))) return;
+        try { const r = await adminCall('setPrimary', { email: a.email, primary: make }); toast(make ? a.email + ' is now a primary administrator.' : 'Primary rights removed.', 'ok'); renderAdmins(r); }
+        catch (e) { if (e.code !== 'SESSION') toast(e.message, 'err'); }
+      });
+      acts.push(tg);
+    }
+    if (!locked) {
+      const resend = h('button', { class: 'btn ghost sm', type: 'button' }, icon('mail', 15), a.status === 'active' ? 'Reset password' : 'Resend invitation');
+      resend.addEventListener('click', async () => {
+        if (a.status === 'active' && !(await confirmDialog({ title: 'Reset password?', message: a.email + ' will be signed out and emailed a new code to choose a new password.' + (a.primary ? ' Their primary rights will also be removed.' : ''), confirmText: 'Reset and email code' }))) return;
+        try {
+          const r = await adminCall('resendInvite', { email: a.email });
+          toast(r.mailed ? 'New invitation emailed to ' + a.email + '.' : 'The email could not be sent. Please try again.', r.mailed ? 'ok' : 'err');
+          renderAdmins(r);
+        } catch (e) { if (e.code !== 'SESSION') toast(e.message, 'err'); }
+      });
+      const remove = h('button', { class: 'btn danger sm', type: 'button' }, icon('trash', 15), 'Remove');
+      remove.addEventListener('click', async () => {
+        if (!(await confirmDialog({ title: 'Remove administrator?', message: a.email + ' will lose administrator access immediately and be signed out.', confirmText: 'Remove', danger: true }))) return;
+        try { const r = await adminCall('removeAdmin', { email: a.email }); toast('Administrator removed.', 'ok'); renderAdmins(r); }
+        catch (e) { if (e.code !== 'SESSION') toast(e.message, 'err'); }
+      });
+      acts.push(resend, remove);
+    }
+    const sub = a.status === 'active' ? 'Joined ' + fmtTime(a.joinedAt)
+      : (a.inviteExp > Date.now() ? 'Invitation valid until ' + fmtTime(a.inviteExp) : 'Invitation expired. Use “Resend invitation”.');
+    return h('div', { class: 'row' },
+      h('div', { class: 'tile', style: 'width:42px;height:42px' }, icon('users', 20)),
+      h('div', { class: 'grow' }, h('div', { class: 't' }, a.email, ' ',
+        h('span', { class: 'pill ' + (a.status === 'active' ? 'on' : 'off'), text: a.status === 'active' ? 'Active' : 'Invited' }), ' ',
+        a.primary ? h('span', { class: 'pill qr', text: 'Primary' }) : null),
+        h('div', { class: 's', text: sub })),
+      h('div', { class: 'acts' }, acts));
+  });
+
+  ui.content.replaceChildren(
+    pageHead('Administrators', (d.owner ? 'You are the primary administrator (account owner). ' : 'You are a primary administrator. ') + 'Primary administrators can add or remove secondary administrators. ' + d.admins.length + ' of ' + d.max + ' secondary administrators used.'),
+    form,
+    h('div', { class: 'box' }, h('h3', { text: 'Who can sign in to the admin portal' }),
+      h('div', { class: 'row' },
+        h('div', { class: 'tile', style: 'width:42px;height:42px' }, icon('shield', 20)),
+        h('div', { class: 'grow' }, h('div', { class: 't' }, d.primary, ' ', h('span', { class: 'pill qr', text: 'Primary (owner)' })), h('div', { class: 's', text: 'Can do everything, including making other administrators primary.' }))),
+      rows.length ? rows : h('p', { style: 'margin:12px 0 0;color:var(--muted)', text: 'No secondary administrators yet.' })));
+}
+
+
+
+/* =====================================================================
+   ===================================================================== */
+LOG_LABELS.APP_SHEET_ACCESS_CHANGED = ['App sheet access changed'];
+
+const _pgSettingsAppSheet = pgSettings;
+pgSettings = async function () {
+  await _pgSettingsAppSheet();
+  if (state.role !== 'primary') return;
+  let d;
+  try { d = await adminCall('getAppSheetAccess'); } catch (e) { return; }
+
+  const rows = d.apps.map(a => {
+    const ta = h('textarea', { id: 'asa-' + a.id, maxlength: '6000', style: 'min-height:64px', placeholder: 'abc@gmail.com, xyz@gmail.com' }, (a.emails || []).join(', '));
+    const msg = h('div', { class: 'alert err', role: 'alert', style: 'display:none' });
+    const btn = h('button', { class: 'btn primary sm', type: 'button' }, 'Save');
+    btn.addEventListener('click', async () => {
+      msg.style.display = 'none'; btn.disabled = true;
+      try {
+        const r = await adminCall('saveAppSheetAccess', { id: a.id, emails: ta.value });
+        ta.value = r.emails.join(', ');
+        toast(a.name + ': ' + r.emails.length + ' email' + (r.emails.length === 1 ? '' : 's') + ' saved.', 'ok');
+      } catch (e) { if (e.code !== 'SESSION') { msg.textContent = e.message; msg.style.display = ''; } }
+      btn.disabled = false;
+    });
+    return h('div', { class: 'field', style: 'padding-top:12px;border-top:1px solid var(--line-2)' },
+      h('label', { for: 'asa-' + a.id }, a.name, ' ', a.active ? null : h('span', { class: 'pill off', text: 'Inactive' })),
+      msg, ta, h('div', { style: 'margin-top:8px' }, btn));
+  });
+
+  ui.content.append(h('div', { class: 'box' }, h('h3', { text: 'Sheet access by application' }),
+    h('p', { style: 'color:var(--muted);font-size:13px;margin-top:0', text: 'Give someone access to the “Sheet” button of ONE application only. Emails listed here see the button on that application alone. Emails in “Google Sheet access” above still see every sheet. Each email must also be added under Users and be active, because it signs in with an emailed code. Separate emails with commas.' }),
+    rows.length ? rows : h('p', { style: 'margin:0;color:var(--muted)', text: 'No application has a Google Sheet URL yet. Add one under Applications > Edit > Google Sheet URL, then it will appear here.' })));
+};
 
 /* ====================================================================
    BOOT
