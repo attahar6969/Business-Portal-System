@@ -1,5 +1,5 @@
 /**
- * Kisan Enterprises Central Business Portal  —  Code.gs
+ * Attahar Business Portal  —  Code.gs
  *
  * Pure Google Apps Script. All persistent data lives in Script Properties
  * (PropertiesService). No Google Sheets, no external database.
@@ -18,7 +18,7 @@
 /* ============================== CONFIG ============================== */
 
 const PORTAL = {
-  DEFAULT_ADMIN_EMAIL: 'mis@kisanenterprises.in',
+  DEFAULT_ADMIN_EMAIL: 'valobvb30@gmail.com',
   SCHEMA: 1,
   // PBKDF2-HMAC-SHA256 implemented on top of Utilities.computeHmacSha256Signature.
   // Apps Script has no native PBKDF2, and each HMAC call is slow, so this is far
@@ -58,7 +58,7 @@ function bad_(msg) { return new AppError('INVALID', msg); }
 
 function doGet(e) {
   const view = (e && e.parameter && e.parameter.page === 'admin') ? 'admin' : 'public';
-  let title = 'Kisan Enterprises Central Business Portal';
+  let title = 'Attahar Business Portal';
   try {
     const s = parse_(PropertiesService.getScriptProperties().getProperty(K.SET));
     if (s && s.portalName) title = String(s.portalName);
@@ -403,7 +403,7 @@ function adminQrData_(p) {
 function adminCheckUrl_(p) {
   const url = normalizeUrl_(p.url);
   try {
-    const r = UrlFetchApp.fetch(url, { method: 'get', muteHttpExceptions: true, followRedirects: true, headers: { 'User-Agent': 'KisanPortalLinkCheck/1.0' } });
+    const r = UrlFetchApp.fetch(url, { method: 'get', muteHttpExceptions: true, followRedirects: true, headers: { 'User-Agent': 'PortalLinkCheck/1.0' } });
     const c = r.getResponseCode();
     let msg;
     if (c >= 200 && c < 400) msg = 'Reachable (HTTP ' + c + ').';
@@ -565,11 +565,11 @@ function adminListLog_() {
 
 function defaultSettings_() {
   return {
-    portalName: 'Kisan Enterprises Central Business Portal',
-    tagline: 'One secure place for every Kisan business application',
-    description: 'Find and open the business applications used across Kisan Enterprises.',
-    monogram: 'KE', accent: 'navy', cardLayout: 'grid', defaultCategory: 'all', refreshMinutes: 0,
-    footerText: 'Kisan Enterprises. All rights reserved.',
+    portalName: 'Attahar Business Portal',
+    tagline: 'One secure place for every Attahar business application',
+    description: 'Find and open the business applications used across Attahar.',
+    monogram: 'AB', accent: 'navy', cardLayout: 'grid', defaultCategory: 'all', refreshMinutes: 0,
+    footerText: 'Attahar. All rights reserved.',
     qr: { size: 300, caption: true, enableForNew: false }
   };
 }
@@ -968,7 +968,7 @@ function doGet(e) {
   const prm = (e && e.parameter) || {};
   const view = prm.page === 'admin' ? 'admin' : 'public';
   const open = /^[a-z0-9]{6,16}$/.test(String(prm.open || '')) ? String(prm.open) : '';
-  let title = 'Kisan Enterprises Central Business Portal';
+  let title = 'Attahar Business Portal';
   try {
     const s = parse_(PropertiesService.getScriptProperties().getProperty(K.SET));
     if (s && s.portalName) title = String(s.portalName);
@@ -1247,9 +1247,9 @@ function apiRequestReset(email) {
         const when = Utilities.formatDate(new Date(), 'Asia/Kolkata', 'dd MMM yyyy, hh:mm a');
         MailApp.sendEmail({
           to: toSend.to,
-          name: 'Kisan Enterprises Portal',
+          name: 'Attahar Business Portal',
           subject: 'Your portal password reset code',
-          body: 'A password reset was requested for the Kisan Enterprises Central Business Portal administrator account on ' + when + ' (IST).\n\n' +
+          body: 'A password reset was requested for the Attahar Business Portal administrator account on ' + when + ' (IST).\n\n' +
                 'Reset code:  ' + toSend.code + '\n\n' +
                 'The code is valid for ' + (RESET.TTL_MS / 60000) + ' minutes and can be used once.\n' +
                 'Open the portal, choose Admin Login > Forgot password, and enter this code with a new password.\n\n' +
@@ -1306,7 +1306,7 @@ function testResetEmail() {
   assertEditorRun_();
   const auth = parse_(PropertiesService.getScriptProperties().getProperty(K.AUTH));
   const to = auth ? auth.email : PORTAL.DEFAULT_ADMIN_EMAIL;
-  MailApp.sendEmail({ to: to, name: 'Kisan Enterprises Portal', subject: 'Portal email test', body: 'Email sending works. The Forgot password feature can now deliver reset codes to this address.' });
+  MailApp.sendEmail({ to: to, name: 'Attahar Business Portal', subject: 'Portal email test', body: 'Email sending works. The Forgot password feature can now deliver reset codes to this address.' });
   Logger.log('Test email sent to ' + to + '. Remaining email quota today: ' + MailApp.getRemainingDailyQuota());
   Logger.log('Now deploy a NEW VERSION (Deploy > Manage deployments > Edit > New version > Deploy).');
 }
@@ -1322,7 +1322,7 @@ function checkPasswordPolicy_(pw) {
    (below the FORGOT PASSWORD block, in the SAME file; do not create a new file).
 
    Rules
-   - The existing administrator (mis@kisanenterprises.in) is the PRIMARY.
+   - The existing administrator (valobvb30@gmail.com) is the PRIMARY.
    - Only the primary can add or remove other administrators.
    - Adding an email sends that person an invitation code by email.
      They open Admin Login > "Join here", enter the email, the code and
@@ -1384,10 +1384,10 @@ function sendInviteMail_(to, code, isReset) {
     const url = ScriptApp.getService().getUrl() + '?page=admin';
     MailApp.sendEmail({
       to: to,
-      name: 'Kisan Enterprises Portal',
+      name: 'Attahar Business Portal',
       subject: isReset ? 'Your portal administrator password was reset' : 'You have been invited as a portal administrator',
-      body: (isReset ? 'The primary administrator reset your access to the Kisan Enterprises Central Business Portal.\n\n'
-                     : 'You have been invited to help administer the Kisan Enterprises Central Business Portal.\n\n') +
+      body: (isReset ? 'The primary administrator reset your access to the Attahar Business Portal.\n\n'
+                     : 'You have been invited to help administer the Attahar Business Portal.\n\n') +
             'Invitation code:  ' + code + '\n' +
             'Valid for ' + (ADM.INVITE_TTL_MS / 3600000) + ' hours, single use.\n\n' +
             'How to join:\n' +
@@ -1869,8 +1869,8 @@ function apiUserRequestCode(email) {
     });
     if (send) {
       try {
-        MailApp.sendEmail({ to: send.to, name: 'Kisan Enterprises Portal', subject: 'Your portal sign-in code',
-          body: 'Hello ' + send.name + ',\n\nYour sign-in code for the Kisan Enterprises portal is:  ' + send.code + '\n\nIt is valid for ' + (UAUTH.OTP_TTL_MS / 60000) + ' minutes and works once.\nIf you did not request it, ignore this email.' });
+        MailApp.sendEmail({ to: send.to, name: 'Attahar Business Portal', subject: 'Your portal sign-in code',
+          body: 'Hello ' + send.name + ',\n\nYour sign-in code for the Attahar Business Portal is:  ' + send.code + '\n\nIt is valid for ' + (UAUTH.OTP_TTL_MS / 60000) + ' minutes and works once.\nIf you did not request it, ignore this email.' });
       } catch (err) { console.error('Sign-in email failed: ' + err); }
     } else { Utilities.sleep(1500); }
     Utilities.sleep(600);
@@ -2046,8 +2046,8 @@ function apiUserRequestCode(email, appId) {
     }
     if (send) {
       try {
-        MailApp.sendEmail({ to: send.to, name: 'Kisan Enterprises Portal', subject: 'Your portal sign-in code',
-          body: 'Hello ' + send.name + ',\n\nYour sign-in code for the Kisan Enterprises portal is:  ' + send.code + '\n\nIt is valid for ' + (UAUTH.OTP_TTL_MS / 60000) + ' minutes and works once.\nIf you did not request it, ignore this email.' });
+        MailApp.sendEmail({ to: send.to, name: 'Attahar Business Portal', subject: 'Your portal sign-in code',
+          body: 'Hello ' + send.name + ',\n\nYour sign-in code for the Attahar Business Portal is:  ' + send.code + '\n\nIt is valid for ' + (UAUTH.OTP_TTL_MS / 60000) + ' minutes and works once.\nIf you did not request it, ignore this email.' });
       } catch (err) { console.error('Sign-in email failed: ' + err); }
     }
     return { sent: true };
@@ -2149,8 +2149,8 @@ function apiSheetRequestCode(email) {
     if (limited) throw new AppError('RATE_LIMITED', 'A code was requested recently. Please wait a minute, check your inbox and spam folder, then try again.');
     if (send) {
       try {
-        MailApp.sendEmail({ to: send.to, name: 'Kisan Enterprises Portal', subject: 'Your portal sign-in code',
-          body: 'Hello ' + send.name + ',\n\nYour sign-in code for the Kisan Enterprises portal is:  ' + send.code + '\n\nIt is valid for ' + (UAUTH.OTP_TTL_MS / 60000) + ' minutes and works once.\nIf you did not request it, ignore this email.' });
+        MailApp.sendEmail({ to: send.to, name: 'Attahar Business Portal', subject: 'Your portal sign-in code',
+          body: 'Hello ' + send.name + ',\n\nYour sign-in code for the Attahar Business Portal is:  ' + send.code + '\n\nIt is valid for ' + (UAUTH.OTP_TTL_MS / 60000) + ' minutes and works once.\nIf you did not request it, ignore this email.' });
       } catch (err) { console.error('Sign-in email failed: ' + err); }
     }
     return { sent: true };
@@ -2180,4 +2180,340 @@ function apiGetSheets(userToken, adminToken) {
 }
 function include_(name) {
   return HtmlService.createHtmlOutputFromFile(name).getContent();
+}
+
+/* =====================================================================
+   CO-PRIMARY ADMINISTRATORS  -  paste at the very END of Code.gs
+   (below the USER MANAGEMENT / GOOGLE SHEET block). Change nothing else.
+
+   - The owner (the account created at first-time setup) can make any ACTIVE
+     secondary administrator a primary administrator, and take it back.
+   - A co-primary can do everything a primary can (add/remove secondary
+     administrators, form rules, sheet access) EXCEPT: promote/demote anyone,
+     touch another co-primary, or change the owner's sign-in email/password.
+   - Resetting a co-primary's password removes their primary rights.
+   ===================================================================== */
+
+function requireOwner_() {
+  if (!CUR_USER_.owner) throw new AppError('FORBIDDEN', 'Only the original primary administrator can do this.');
+}
+
+function publicAdmin_(r) {
+  return { email: r.e, status: r.st, primary: !!r.p, createdAt: r.at || 0, joinedAt: r.ja || 0, inviteExp: r.inv ? r.inv.exp : 0 };
+}
+function adminsView_(all) {
+  const auth = parse_(all[K.AUTH]);
+  return { primary: auth ? auth.email : '', owner: CUR_USER_.owner === true, admins: readAdmins_(all).map(publicAdmin_), max: ADM.MAX };
+}
+
+/* ---------- sign-in: a co-primary gets role "primary" (session itself stays a normal admin session) ---------- */
+function apiLogin(email, password) {
+  return safe_(function () {
+    ensureNotLocked_();
+    const all = readAll_();
+    const primary = parse_(all[K.AUTH]);
+    if (!primary) throw new AppError('NOT_CONFIGURED', 'The administrator account has not been set up yet.');
+    const given = normEmail_(email);
+    const pw = (typeof password === 'string') ? password.slice(0, 256) : '';
+    let acct = null, role = '', co = false;
+    if (safeEqual_(given, primary.email)) { acct = primary; role = 'primary'; }
+    else {
+      const rec = findAdmin_(readAdmins_(all), given);
+      if (rec && rec.st === 'active' && rec.a) { acct = rec.a; role = 'secondary'; co = !!rec.p; }
+    }
+    const pwOk = checkPassword_(acct, pw);
+    if (acct && pwOk) {
+      const token = withLock_(function () {
+        commit_({}, [K.THR], true);
+        const t = createSession_(acct.email, role);
+        CUR_USER_ = { email: acct.email, primary: role === 'primary' || co, owner: role === 'primary' };
+        logEvent_('LOGIN_OK', 'Administrator', 'Signed in');
+        return t;
+      });
+      return { token: token, email: acct.email, role: (role === 'primary' || co) ? 'primary' : 'secondary', owner: role === 'primary', idleMs: PORTAL.SESSION_IDLE_MS };
+    }
+    withLock_(function () { registerFailure_('LOGIN_FAIL', 'Failed sign-in attempt'); });
+    Utilities.sleep(700);
+    throw new AppError('BAD_LOGIN', 'Invalid email or password.');
+  });
+}
+
+/* ---------- every admin request: primary rights are read live from the record, so promotion/demotion is instant ---------- */
+function apiAdmin(token, action, payload) {
+  return safe_(function () {
+    const sid = validateSession_(token);
+    const P = PropertiesService.getScriptProperties();
+    const info = (parse_(P.getProperty(K.SESS)) || {})[sid] || {};
+    if (info.r === 's') {
+      const rec = findAdmin_(readAdminsRaw_(), info.u);
+      if (!rec || rec.st !== 'active') throw new AppError('SESSION', 'Your administrator access has been removed. Please sign in again.');
+      CUR_USER_ = { email: info.u, primary: !!rec.p, owner: false };
+    } else {
+      const auth = parse_(P.getProperty(K.AUTH));
+      CUR_USER_ = { email: auth ? auth.email : '', primary: true, owner: true };
+    }
+    if (typeof action !== 'string' || !Object.prototype.hasOwnProperty.call(ADMIN_ACTIONS_, action)) {
+      throw new AppError('BAD_ACTION', 'Unknown action.');
+    }
+    const p = (payload && typeof payload === 'object' && !Array.isArray(payload)) ? payload : {};
+    return ADMIN_ACTIONS_[action](p, sid);
+  });
+}
+
+function adminPing_(p, sid) {
+  return { email: CUR_USER_.email, role: CUR_USER_.primary ? 'primary' : 'secondary', owner: CUR_USER_.owner === true, idleMs: PORTAL.SESSION_IDLE_MS };
+}
+
+function adminGetSettings_() {
+  const all = readAll_();
+  const auth = parse_(all[K.AUTH]);
+  return {
+    settings: readSettings_(all),
+    adminEmail: CUR_USER_.owner ? (auth ? auth.email : '') : CUR_USER_.email,
+    role: CUR_USER_.primary ? 'primary' : 'secondary',
+    owner: CUR_USER_.owner === true,
+    categories: readCats_(all)
+  };
+}
+
+/* ---------- password change: the owner changes the owner's password, everyone else their own ---------- */
+function adminChangePassword_(p, sid) {
+  ensureNotLocked_();
+  const all0 = readAll_();
+  const rec0 = CUR_USER_.owner ? null : findAdmin_(readAdmins_(all0), CUR_USER_.email);
+  const acct0 = CUR_USER_.owner ? parse_(all0[K.AUTH]) : (rec0 && rec0.a);
+  if (!acct0) throw new AppError('NOT_FOUND', 'Your account was not found.');
+  if (!checkPassword_(acct0, String(p.currentPassword || ''))) {
+    withLock_(function () { registerFailure_('PWD_VERIFY_FAIL', 'Wrong current password while changing password'); });
+    Utilities.sleep(700);
+    throw bad_('Your current password is incorrect.');
+  }
+  if (p.newPassword !== p.confirmPassword) throw bad_('The new password and its confirmation do not match.');
+  checkPasswordPolicy_(p.newPassword);
+  if (safeEqual_(String(p.newPassword), String(p.currentPassword))) throw bad_('The new password must be different from the current one.');
+  const next = createAuth_(p.newPassword, acct0.email);
+  withLock_(function () {
+    const all = readAll_();
+    const sess = parse_(all[K.SESS]) || {};
+    const keep = {};
+    Object.keys(sess).forEach(function (h) {
+      const s = sess[h];
+      const mine = CUR_USER_.owner ? (s.r !== 's') : (s.r === 's' && s.u === CUR_USER_.email);
+      if (!mine || h === sid) keep[h] = s;
+    });
+    const sets = {}; sets[K.SESS] = JSON.stringify(keep);
+    if (CUR_USER_.owner) sets[K.AUTH] = JSON.stringify(next);
+    else {
+      const list = readAdmins_(all);
+      const r = findAdmin_(list, CUR_USER_.email);
+      if (!r || r.st !== 'active') throw new AppError('NOT_FOUND', 'Your account was not found.');
+      r.a = next; sets[ADM_KEY] = JSON.stringify(list);
+    }
+    commit_(sets, [K.THR], true);
+    logEvent_('PASSWORD_CHANGED', 'Administrator', 'Other sessions of this account were signed out');
+  });
+  return { done: true };
+}
+
+/* ---------- only the owner may change the portal sign-in email ---------- */
+const _saveSettingsBeforeCo_ = ADMIN_ACTIONS_.saveSettings;
+ADMIN_ACTIONS_.saveSettings = function (p, sid) {
+  p = Object.assign({}, p);
+  if (!CUR_USER_.owner) { delete p.adminEmail; delete p.currentPassword; }
+  const r = _saveSettingsBeforeCo_(p, sid);
+  if (!CUR_USER_.owner) r.adminEmail = CUR_USER_.email;
+  return r;
+};
+
+/* ---------- promote / demote (owner only) ---------- */
+function adminSetPrimary_(p) {
+  requireOwner_();
+  const email = normEmail_(p.email);
+  const make = p.primary === true;
+  withLock_(function () {
+    const list = readAdmins_(readAll_());
+    const r = findAdmin_(list, email);
+    if (!r) throw new AppError('NOT_FOUND', 'Administrator not found.');
+    if (r.st !== 'active') throw bad_('This person has not joined yet. They can be made primary after they accept the invitation.');
+    if (!!r.p === make) return;
+    if (make) r.p = 1; else delete r.p;
+    commit_(sub_(ADM_KEY, list), [], true);
+    logEvent_(make ? 'ADMIN_PROMOTED' : 'ADMIN_DEMOTED', email, make ? 'Made a primary administrator' : 'Primary rights removed');
+  });
+  return adminsView_(readAll_());
+}
+
+/* ---------- a co-primary can only be removed or reset by the owner ---------- */
+function guardCoPrimary_(email) {
+  const r = findAdmin_(readAdmins_(readAll_()), normEmail_(email));
+  if (r && r.p) requireOwner_();
+}
+const _removeBeforeCo_ = ADMIN_ACTIONS_.removeAdmin;
+ADMIN_ACTIONS_.removeAdmin = function (p, sid) {
+  requirePrimary_();
+  guardCoPrimary_(p.email);
+  return _removeBeforeCo_(p, sid);
+};
+const _resendBeforeCo_ = ADMIN_ACTIONS_.resendInvite;
+ADMIN_ACTIONS_.resendInvite = function (p, sid) {
+  requirePrimary_();
+  const email = normEmail_(p.email);
+  guardCoPrimary_(email);
+  const r = _resendBeforeCo_(p, sid);
+  withLock_(function () {
+    const list = readAdmins_(readAll_());
+    const a = findAdmin_(list, email);
+    if (a && a.p) {
+      delete a.p;
+      commit_(sub_(ADM_KEY, list), [], true);
+      logEvent_('ADMIN_DEMOTED', email, 'Primary rights removed because the password was reset');
+    }
+  });
+  return Object.assign(adminsView_(readAll_()), { mailed: r.mailed });
+};
+
+ADMIN_ACTIONS_.ping = adminPing_;
+ADMIN_ACTIONS_.getSettings = adminGetSettings_;
+ADMIN_ACTIONS_.changePassword = adminChangePassword_;
+ADMIN_ACTIONS_.setPrimary = adminSetPrimary_;
+
+/* =====================================================================
+   SHEET ACCESS BY APPLICATION  -  paste at the very END of Code.gs
+   (below the CO-PRIMARY ADMINISTRATORS block). Change nothing else.
+
+   - The existing "Google Sheet access" list keeps working: those emails
+     still see the Sheet button on EVERY app.
+   - New: each app with a sheet can have its OWN email list. Those emails
+     see the Sheet button only on that app.
+   - Rule: administrators, OR emails in the global list, OR emails in that
+     app's own list. The email must still be an active user (it signs in
+     with an emailed code).
+   - Enforced on the server: a sheet link is only returned to people who
+     are allowed to see it.
+   - Only primary administrators can edit these lists.
+   ===================================================================== */
+const SACL_PREFIX = 'kb.sacl.';          // one key per app: kb.sacl.<appId> = ["a@x.com", ...]
+const SACL_MAX_PER_APP = 50;
+
+function readAppSacl_(all, appId) {
+  const a = parse_(all[SACL_PREFIX + appId]);
+  return Array.isArray(a) ? a.filter(function (x) { return typeof x === 'string'; }) : [];
+}
+
+/** True if the email is in the global list or in ANY app's own list. Used to allow sign-in. */
+function emailInAnySheetAcl_(all, email) {
+  if (readSheetAcl_(all).indexOf(email) >= 0) return true;
+  return Object.keys(all).some(function (k) {
+    if (k.indexOf(SACL_PREFIX) !== 0) return false;
+    const a = parse_(all[k]);
+    return Array.isArray(a) && a.indexOf(email) >= 0;
+  });
+}
+
+function parseEmailList_(raw, max) {
+  const s = String(raw === undefined || raw === null ? '' : raw);
+  if (s.length > 6000) throw bad_('The list is too long.');
+  const out = [];
+  s.split(/[,;\s]+/).forEach(function (part) {
+    if (!part) return;
+    const e = normEmail_(part);
+    if (!USER_EMAIL_RE.test(e) || e.length > 120) throw bad_('"' + part.slice(0, 60) + '" is not a valid email address.');
+    if (out.indexOf(e) < 0) out.push(e);
+  });
+  if (out.length > max) throw bad_('At most ' + max + ' email addresses are allowed for one application.');
+  return out;
+}
+
+/* ---------- admin: read / save the per-application lists (primary only) ---------- */
+function adminGetAppSheetAccess_() {
+  requirePrimary_();
+  const all = readAll_();
+  const apps = loadApps_(all).list.filter(function (a) { return !!a.sheet; })
+    .map(function (a) { return { id: a.id, name: a.name, active: !!a.active, emails: readAppSacl_(all, a.id) }; });
+  return { apps: apps, max: SACL_MAX_PER_APP };
+}
+
+function adminSaveAppSheetAccess_(p) {
+  requirePrimary_();
+  const id = String(p.id || '');
+  if (!/^[a-z0-9]{6,16}$/.test(id)) throw bad_('Invalid application.');
+  const emails = parseEmailList_(p.emails, SACL_MAX_PER_APP);
+  return withLock_(function () {
+    const all = readAll_();
+    const app = loadApps_(all).list.filter(function (a) { return a.id === id; })[0];
+    if (!app) throw new AppError('NOT_FOUND', 'Application not found.');
+    const key = SACL_PREFIX + id;
+    if (emails.length) commit_(sub_(key, emails), []); else commit_({}, [key]);
+    logEvent_('APP_SHEET_ACCESS_CHANGED', app.name, emails.length + ' email(s) for this sheet');
+    return { id: id, emails: emails };
+  });
+}
+ADMIN_ACTIONS_.getAppSheetAccess = adminGetAppSheetAccess_;
+ADMIN_ACTIONS_.saveAppSheetAccess = adminSaveAppSheetAccess_;
+
+/* ---------- deleting an app also deletes its email list ---------- */
+const _deleteAppBeforeSacl_ = ADMIN_ACTIONS_.deleteApp;
+ADMIN_ACTIONS_.deleteApp = function (p, sid) {
+  const r = _deleteAppBeforeSacl_(p, sid);
+  try { withLock_(function () { commit_({}, [SACL_PREFIX + String(p.id || '')], true); }); } catch (e) { /* ignore */ }
+  return r;
+};
+
+/* ---------- PUBLIC: sign-in code now also allowed for emails in any app's own list ---------- */
+function apiSheetRequestCode(email) {
+  return safe_(function () {
+    const given = normEmail_(email);
+    let send = null, allowed = false, limited = false;
+    withLock_(function () {
+      const now = Date.now();
+      const all = readAll_();
+      const u = readUsers_(all).filter(function (x) { return x.e === given; })[0];
+      if (!u || !u.a || !emailInAnySheetAcl_(all, given)) return;
+      allowed = true;
+      const o = u.o || {};
+      const sent = (Array.isArray(o.sent) ? o.sent : []).filter(function (t) { return now - t < 3600000; });
+      if (sent.length >= UAUTH.OTP_PER_HOUR || (sent.length && now - sent[sent.length - 1] < UAUTH.OTP_COOLDOWN_MS)) { limited = true; return; }
+      const code = userCode_(), salt = randomHex_(8);
+      sent.push(now);
+      u.o = { s: salt, h: sha256Hex_(salt + code), exp: now + UAUTH.OTP_TTL_MS, tries: 0, sent: sent };
+      commit_(sub_(KB_USR + u.id, u), [], true);
+      send = { to: u.e, name: u.n, code: code };
+    });
+    if (!allowed) {
+      Utilities.sleep(600);
+      throw new AppError('NOT_ALLOWED', 'This email is not authorized for Google Sheet access. Please contact the administrator.');
+    }
+    if (limited) throw new AppError('RATE_LIMITED', 'A code was requested recently. Please wait a minute, check your inbox and spam folder, then try again.');
+    if (send) {
+      try {
+        MailApp.sendEmail({ to: send.to, name: 'Attahar Business Portal', subject: 'Your portal sign-in code',
+          body: 'Hello ' + send.name + ',\n\nYour sign-in code for the Attahar Business Portal is:  ' + send.code + '\n\nIt is valid for ' + (UAUTH.OTP_TTL_MS / 60000) + ' minutes and works once.\nIf you did not request it, ignore this email.' });
+      } catch (err) { console.error('Sign-in email failed: ' + err); }
+    }
+    return { sent: true };
+  });
+}
+
+/* ---------- PUBLIC: which sheet links this visitor may receive ---------- */
+function apiGetSheets(userToken, adminToken) {
+  return safe_(function () {
+    let isAdmin = false;
+    if (typeof adminToken === 'string' && adminToken) {
+      try { validateSession_(adminToken); isAdmin = true; } catch (e) { /* not an admin session */ }
+    }
+    const all = readAll_();
+    let email = '', everySheet = isAdmin;
+    if (!isAdmin && typeof userToken === 'string' && userToken) {
+      const s = userFromToken_(userToken);
+      if (s) { email = s.user.e; everySheet = readSheetAcl_(all).indexOf(email) >= 0; }
+    }
+    if (!everySheet && !email) return { sheets: [] };
+    const out = [];
+    loadApps_(all).list.forEach(function (a) {
+      if (!a.active || !a.sheet) return;
+      if (!everySheet && readAppSacl_(all, a.id).indexOf(email) < 0) return;   // not on this app's list
+      try { out.push({ id: a.id, url: normalizeSheetUrl_(a.sheet) }); } catch (e) { /* skip invalid */ }
+    });
+    return { sheets: out };
+  });
 }
